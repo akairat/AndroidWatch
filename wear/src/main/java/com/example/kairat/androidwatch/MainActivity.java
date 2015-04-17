@@ -6,7 +6,7 @@ import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
+//Comment by Wei
     private TextView mTextView;
 
     @Override
