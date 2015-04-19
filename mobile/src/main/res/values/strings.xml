@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Android Watch</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">The Time Is Now</string>
     <string name="action_settings">Settings</string>
+    <string name="random">Random</string>
+    <string name="help">Help</string>
+    <string name="title_activity_help_menu">helpMenu</string>
+    <string name="title_activity_jsonprocess">JSONProcess</string>>
 </resources>
