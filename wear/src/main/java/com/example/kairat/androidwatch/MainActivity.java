@@ -2,15 +2,16 @@ package com.example.kairat.androidwatch;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements TimePickerFragment.TimePickerFragmentListener{
+import java.util.List;
 
-    private TextView mTextView;
-    private int startHour;
-    private int startMinute;
+public class MainActivity extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,22 +21,18 @@ public class MainActivity extends Activity implements TimePickerFragment.TimePic
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                //mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
-
-        showTimePickerDialog();
     }
 
-
-    public void showTimePickerDialog() {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getFragmentManager(), "timePicker");
+    public void launchSpeechActivity(View v){
+        Intent i = new Intent(this, SpeechActivity.class);
+        startActivity(i);
     }
 
-    @Override
-    public void setStartTime(int hourOfDay, int minute) {
-        startHour = hourOfDay;
-        startMinute = minute;
+    public void launchManualActivity(View v){
+        Intent i = new Intent(this, ManualActivity.class);
+        startActivity(i);
     }
 }
