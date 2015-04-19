@@ -1,13 +1,16 @@
 package com.example.kairat.androidwatch;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
-//Comment by Wei Low
+public class MainActivity extends Activity implements TimePickerFragment.TimePickerFragmentListener{
+
     private TextView mTextView;
+    private int startHour;
+    private int startMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +23,19 @@ public class MainActivity extends Activity {
                 mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
+
+        showTimePickerDialog();
+    }
+
+
+    public void showTimePickerDialog() {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getFragmentManager(), "timePicker");
+    }
+
+    @Override
+    public void setStartTime(int hourOfDay, int minute) {
+        startHour = hourOfDay;
+        startMinute = minute;
     }
 }
