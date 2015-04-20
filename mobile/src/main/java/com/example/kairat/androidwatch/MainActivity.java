@@ -113,6 +113,7 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case 2:
                 pickActivity = "shopping";
+
             case 3:
                 pickActivity = "nature";
         }
