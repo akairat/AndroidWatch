@@ -53,7 +53,8 @@ public class ResultActivity extends ActionBarActivity {
     // private String searchresultnumber ="?results=0:";
     //  private String searchParameters = "?results=0:10&fields=item_name,brand_name,brand_id,item_id,nf_calories,item_description,nf_total_carbohydrate,nf_protein,nf_total_fat,nf_cholesterol"; //the result we want to find
     // private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC&destinations=San+Francisco|Victoria+BC&mode=walking&language=en-EN&sensor=false"; //the result we want to find
-    private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins=-33.8670522,151.1957362&destinations="; //the result we want to find
+    private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins="; //the result we want to find
+    private String destinationlink = "&destinations=";
     private String distanceaddress = null;
     private String distancemode = "&mode=walking&language=en-EN&sensor=false";
 
@@ -287,7 +288,7 @@ public class ResultActivity extends ActionBarActivity {
         }
 
         if (encodedInput != null) {
-            apiUrl = distancelink + distanceaddress + distancemode ;
+            apiUrl = distancelink +PlaceLocation +destinationlink+ distanceaddress + distancemode ;
             Log.e(LOG_MESSAGE, "apiUrl:" +apiUrl);
             //  apiUrl = searchParameters1;
             new CallAPI().execute(apiUrl); //do stuff with URL with parameter
