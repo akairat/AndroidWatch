@@ -106,16 +106,16 @@ public class MainActivity extends ActionBarActivity {
         int ri = rg.nextInt(4);
         switch (ri) {
             case 0:
-                pickActivity = "shopping";
+                pickActivity = "food";
                 break;
             case 1:
-                pickActivity = "dining";
+                pickActivity = "store|shopping_mall|department_store";
                 break;
             case 2:
-                pickActivity = "shopping";
+                pickActivity = "museum";
 
             case 3:
-                pickActivity = "nature";
+                pickActivity = "park|amusement_park";
         }
         System.out.println(pickActivity);
         //System DEBUG: Prints randomly selected activity
@@ -125,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
     //With regards to the watch: time picker + voice activation will be used to pick items
         //pressing "go" on the watch will pass in appropriate JSON info the JSONProcess class
     public void startNext(View view) {
-        Intent i = new Intent(this, JSONProcess.class);
+        Intent i = new Intent(this, ResultActivity.class);
         myString = startHour+":"+startMinute+":"+pickActivity+":"+latitude+":"+longitude;
         System.out.println(myString);
         i.putExtra("qString", myString);
