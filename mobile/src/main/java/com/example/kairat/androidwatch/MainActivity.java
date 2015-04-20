@@ -9,19 +9,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TimePicker;
-
+import android.location.*;
 import java.util.Calendar;
 import java.util.Random;
+
 import android.widget.EditText;
-import android.widget.TextView;
-import android.view.ViewStub;
 
 /*
-* JSON Format for JSONProcess Class "time:activity:budgetMax"
-* TODO: Decide on 4-6 Activities to have
+* JSON Format for JSONProcess Class "hour:min:activity:latitude:longitude"
+* TODO: Decide on 4 Activities to have [icons]
 * TODO: Decide on what the Watch can send to phone
 * TODO: Add a general menu to the help menu class to display
-* TODO: Fill in JSONProcess class
+* TODO: Fill in JSONProcess class with parsing method in the oncreate portion [reference animal sounds app]
 * */
 
 public class MainActivity extends ActionBarActivity {
@@ -31,9 +30,11 @@ public class MainActivity extends ActionBarActivity {
     private static int random_code= 6;
     private String myString;
 
-    private TextView mTextView;
     private int startHour;
     private int startMinute;
+    private String pickActivity;
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,23 @@ public class MainActivity extends ActionBarActivity {
         mTimePicker.show();
     }
 
+    //Currently Location is being fudged - When null, will always give 32-144 geocode
+    //TODO: Create location service
     public void getLocation(View view) {
-        //get GPS coordinates
+        // Get the location manager
+        LocationManager locationManager = (LocationManager)
+                getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(bestProvider);
+        try {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        } catch (NullPointerException e) {
+            latitude = 42.361648260887;
+            longitude = -71.0905194348;
+        }
+        System.out.println(latitude + "," + longitude);
     }
 
     @Override
@@ -87,13 +103,21 @@ public class MainActivity extends ActionBarActivity {
     //Uses a random number generator to pick an activity to do
     public void randomAct(View view) {
         Random rg = new Random();
-        int ri = rg.nextInt(6);
+        int ri = rg.nextInt(4);
         switch (ri) {
             case 0:
-                //myString = "time:activity:activity:budgetMin:budgetMax"
+                pickActivity = "shopping";
+                break;
+            case 1:
+                pickActivity = "dining";
+                break;
+            case 2:
+                pickActivity = "shopping";
+            case 3:
+                pickActivity = "nature";
         }
-        Intent ra = new Intent(this, JSONProcess.class);
-        startActivityForResult(ra, random_code);
+        System.out.println(pickActivity);
+        //System DEBUG: Prints randomly selected activity
     }
 
     //Uses the user's selections to start the next activity
@@ -101,7 +125,8 @@ public class MainActivity extends ActionBarActivity {
         //pressing "go" on the watch will pass in appropriate JSON info the JSONProcess class
     public void startNext(View view) {
         Intent i = new Intent(this, JSONProcess.class);
-        myString = "these:words:are:separated:by:colons";
+        myString = startHour+":"+startMinute+":"+pickActivity+":"+latitude+":"+longitude;
+        System.out.println(myString);
         i.putExtra("qString", myString);
         startActivityForResult(i, adventure_code);
     }
@@ -121,3 +146,5 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+
