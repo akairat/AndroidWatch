@@ -3,15 +3,19 @@
     package="com.example.kairat.androidwatch" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="19"
         android:targetSdkVersion="21" >
     </uses-sdk>
 
-    <android:uses-permission
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Add internet permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Add location permissions -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
 
@@ -38,8 +42,8 @@
             android:label="@string/title_activity_jsonprocess" >
         </activity>
         <activity
-            android:name=".testActivity"
-            android:label="@string/title_activity_test" >
+            android:name=".ResultActivity"
+            android:label="@string/title_activity_result" >
         </activity>
     </application>
 
