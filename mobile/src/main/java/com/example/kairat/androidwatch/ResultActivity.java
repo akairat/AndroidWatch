@@ -77,7 +77,6 @@ public class ResultActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        getPlaces(null);
 
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -85,12 +84,16 @@ public class ResultActivity extends ActionBarActivity {
         }
 
        String qString = extras.getString("qString");
-        String[] result_array = qString.split(":");
+       String[] result_array = qString.split(":");
 
-        startHour =result_array[0].replaceAll(":", "");
-        startMinute =result_array[1].replaceAll(":", "");
-        PlaceType= result_array[2].replaceAll(":", "");
-        PlaceLocation =result_array[3].replaceAll(":", "") +","+result_array[4].replaceAll(":", "");
+        startHour =result_array[0];
+        startMinute =result_array[1];
+        PlaceType= result_array[2];
+        PlaceLocation =result_array[3];
+        System.out.println("OKAYOKOKAOKORKGOBDGKF"+ PlaceLocation);
+
+        getPlaces(null);
+
 
         //get Your Current Location
       /*  String url2= PlacePhotodd+PlaceAPIKey;
