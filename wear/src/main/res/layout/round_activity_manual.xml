@@ -4,4 +4,71 @@
     android:layout_height="match_parent"
     tools:context="com.example.kairat.androidwatch.ManualActivity" tools:deviceIds="wear_round">
 
+    <!--
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.example.kairat.androidwatch.ChoicesFragment"
+        android:layout_centerInParent="true"
+        tools:layout="@layout/fragment_choices"
+        />
+
+        -->
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/iconfood"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
+            android:id="@+id/foodButton"
+            android:layout_toRightOf="@+id/shoppingButton"
+            android:background="#ffffff"
+            android:layout_marginLeft="0dp"
+            android:onClick="chooseFood"
+            />
+
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_toRightOf="@+id/parkButton"
+            android:layout_below="@+id/foodButton"
+            android:src="@drawable/iconmuseum"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:id="@+id/museumButton"
+            android:adjustViewBounds="true"
+            android:background="#ffffff"
+            android:onClick="chooseMuseum"/>
+
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/iconpark"
+            android:layout_below="@+id/shoppingButton"
+            android:scaleType="fitCenter"
+            android:padding="3dp"
+            android:id="@+id/parkButton"
+            android:adjustViewBounds="true"
+            android:background="#ffffff"
+            android:onClick="choosePark"/>
+
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/iconshopping"
+            android:id="@+id/shoppingButton"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
+            android:background="#ffffff"
+            android:onClick="chooseShopping"/>
+    </RelativeLayout>
+
+
 </RelativeLayout>
