@@ -19,7 +19,7 @@ public class ListenerService extends WearableListenerService {
 
     private void queryMessage(String message) {
         Intent i = new Intent(this, JSONProcess.class);
-        i.putExtra("event", message);
+        i.putExtra("watchQString", message);
         startActivity(i);
     }
 }
