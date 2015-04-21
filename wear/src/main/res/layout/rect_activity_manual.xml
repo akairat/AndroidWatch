@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:orientation="vertical"
-    tools:context="com.example.kairat.androidwatch.ManualActivity" tools:deviceIds="wear_square">
+    tools:context="com.example.kairat.androidwatch.ManualActivity" tools:deviceIds="wear_square"
+    android:background="#ffffff">
 
     <!--
     <fragment
@@ -30,7 +31,6 @@
             android:layout_toRightOf="@+id/shoppingButton"
             android:background="#ffffff"
             android:layout_marginLeft="0dp"
-            android:onClick="chooseFood"
             />
 
         <ImageButton
@@ -44,7 +44,7 @@
             android:id="@+id/museumButton"
             android:adjustViewBounds="true"
             android:background="#ffffff"
-            android:onClick="chooseMuseum"/>
+            />
 
         <ImageButton
             android:layout_width="75dp"
@@ -56,7 +56,7 @@
             android:id="@+id/parkButton"
             android:adjustViewBounds="true"
             android:background="#ffffff"
-            android:onClick="choosePark"/>
+            />
 
         <ImageButton
             android:layout_width="75dp"
@@ -67,7 +67,7 @@
             android:padding="4dp"
             android:adjustViewBounds="true"
             android:background="#ffffff"
-            android:onClick="chooseShopping"/>
+            />
     </RelativeLayout>
 
 </RelativeLayout>
