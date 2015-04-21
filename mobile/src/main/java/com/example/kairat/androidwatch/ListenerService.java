@@ -1,6 +1,6 @@
 package com.example.kairat.androidwatch;
 
-
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,13 +14,12 @@ public class ListenerService extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Message Received");
-        Log.d(TAG, messageEvent.getPath());
-        showToast(messageEvent.getPath());
+        queryMessage(messageEvent.getPath());
     }
 
-    private void showToast(String message) {
-        Log.d(TAG, "showToast is called");
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        Log.d(TAG, "toast was shown");
+    private void queryMessage(String message) {
+        Intent i = new Intent(this, JSONProcess.class);
+        i.putExtra("event", message);
+        startActivity(i);
     }
 }
