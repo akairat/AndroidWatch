@@ -6,5 +6,6 @@
     <string name="random">Random</string>
     <string name="help">Help</string>
     <string name="title_activity_help_menu">helpMenu</string>
-    <string name="title_activity_jsonprocess">JSONProcess</string>>
+    <string name="title_activity_jsonprocess">JSONProcess</string>
+    <string name="title_activity_test">testActivity</string>>
 </resources>
