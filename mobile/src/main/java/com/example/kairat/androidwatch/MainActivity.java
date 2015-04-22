@@ -113,9 +113,10 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case 2:
                 pickActivity = "museum";
-
+                break;
             case 3:
                 pickActivity = "park|amusement_park";
+                break;
         }
         System.out.println(pickActivity);
         //System DEBUG: Prints randomly selected activity
