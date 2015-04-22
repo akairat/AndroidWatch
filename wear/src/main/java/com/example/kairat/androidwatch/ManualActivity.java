@@ -148,6 +148,9 @@ TimePicker Dialog
 
     */
 
+    /**
+     * Assign onClick listeners to the buttons on the screen
+     */
     public void showChoiceButtons(){
         findViewById(R.id.parkButton).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -187,6 +190,9 @@ TimePicker Dialog
 
     }
 
+    /**
+     * Method for sending message to the mobile
+     */
     public void sendChoice() {
         Log.d(TAG, nodeId);
         if (nodeId != null) {
@@ -216,6 +222,9 @@ TimePicker Dialog
     }
 
 
+    /**
+     * Method for putting images to the new activity (Hardcoded for presentation)
+     */
     public void putImage(){
         Intent i = new Intent(this, ImageActivity.class);
         startActivity(i);

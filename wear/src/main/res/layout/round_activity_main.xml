@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context=".MainActivity" tools:deviceIds="wear_round">
+    android:layout_height="match_parent" tools:context=".MainActivity" tools:deviceIds="wear_round"
+    android:background="#ffffff">
 
 
     <RelativeLayout
@@ -10,20 +11,29 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:text="speech"
             android:onClick="launchSpeechActivity"
-            android:id="@+id/speechButton"/>
+            android:id="@+id/speechButton"
+            android:src="@drawable/speechrec"
+            android:scaleType="fitCenter"
+            android:padding="0dp"
+            android:background="#ffffff"
+            />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_below="@+id/speechButton"
+            android:layout_marginTop="20dp"
+            android:text="Manual"
             android:onClick="launchManualActivity"
-            android:layout_marginTop="25dp"
-            android:text="Manual"/>
+            android:src="@drawable/manually"
+            android:scaleType="fitCenter"
+            android:padding="0dp"
+            android:background="#ffffff"/>
     </RelativeLayout>
 
 </RelativeLayout>
