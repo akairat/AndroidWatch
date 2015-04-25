@@ -9,6 +9,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Add internet permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Add location permissions -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission
@@ -26,7 +27,8 @@
         android:theme="@style/AppTheme" >
 
         <!-- DO NOT REMOVE meta-data -->
-        <meta-data android:name="com.google.android.gms.version"
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
@@ -52,12 +54,16 @@
         </activity>
 
         <!-- Kairat Added, DO NOT REMOVE -->
-        <service
-            android:name=".ListenerService" >
+        <service android:name=".ListenerService" >
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".GPSService"
+            android:label="@string/title_activity_location_services" >
+        </activity>
     </application>
 
 </manifest>
