@@ -8,4 +8,6 @@
     <string name="title_activity_help_menu">helpMenu</string>
     <string name="title_activity_jsonprocess">JSONProcess</string>
     <string name="title_activity_result">ResultActivity</string>
+    <string name="feelinglucky">Im Feeling Lucky</string>
+    <string name="letsExplore">See My City!</string>
 </resources>

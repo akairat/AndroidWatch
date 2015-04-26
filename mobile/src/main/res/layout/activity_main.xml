@@ -2,109 +2,112 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.kairat.androidwatch.MainActivity">
+    tools:context="com.example.kairat.androidwatch.MainActivity"
+    android:id="@+id/">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView2"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/backgrounmap"
+        android:alpha="0.5"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView android:text="@string/letsExplore" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
+        android:textSize="30dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="30dp" />
-
-    <GridLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/gridLayout">
+        android:layout_marginTop="10dp"
+        android:textStyle="bold" />
 
         <AnalogClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/analogClock"
-            android:layout_row="0"
-            android:layout_column="1" />
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/help"
-            android:id="@+id/button"
-            android:layout_row="1"
-            android:layout_column="0" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location?"
-            android:id="@+id/button5"
-            android:layout_below="@+id/gridLayout"
-            android:layout_toStartOf="@+id/button3"
-            android:onClick="getLocation"
-            android:layout_row="2"
-            android:layout_column="0" />
-
-        <Button
-            android:layout_width="138dp"
+    <Button
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pick Time"
             android:id="@+id/button4"
-            android:layout_row="1"
             android:onClick="clickTime"
-            android:layout_column="1"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+        android:layout_above="@+id/button5"
+        android:layout_alignParentEnd="true" />
 
-        <Button
-            android:layout_width="wrap_content"
+    <Button
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/random"
-            android:id="@+id/button2"
-            android:layout_row="1"
-            android:onClick="randomAct"
-            android:layout_column="2" />
-
-    </GridLayout>
-
-    <Button
-        android:layout_width="129dp"
-        android:layout_height="wrap_content"
-        android:text="Go!"
-        android:id="@+id/button3"
-        android:layout_row="9"
-        android:onClick="startNext"
-        android:layout_column="1"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/editText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp" />
-
-    <Button
-        android:layout_width="129dp"
-        android:layout_height="wrap_content"
-        android:text="Go!"
-        android:id="@+id/button10"
-        android:layout_row="9"
-        android:onClick="startNext"
-        android:layout_column="1"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/editText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp" />
+            android:text="Pick Location"
+            android:id="@+id/button5"
+            android:onClick="getLocation"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="167dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/editText"
         android:hint="Spending limit?"
         android:textAlignment="center"
-        android:layout_below="@+id/gridLayout"
-        android:layout_alignStart="@+id/textView" />
+        android:layout_marginBottom="30dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_marginBottom="38dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/editText">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help"
+            android:id="@+id/button"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="#ff4381b6" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feelinglucky"
+            android:id="@+id/button2"
+            android:onClick="randomAct"
+            android:layout_above="@+id/editText"
+            android:background="#fffff36b"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go!"
+            android:id="@+id/button3"
+            android:onClick="startNext"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/analogClock"
+            android:background="#ff3ec216"
+            android:layout_marginRight="0dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>
