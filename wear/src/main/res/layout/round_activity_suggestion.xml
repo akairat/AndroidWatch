@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.kairat.androidwatch.SuggestionActivity" tools:deviceIds="wear_round"
+    android:background="#ffffff">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/gray_box"
+        android:scaleType="fitXY"
+        android:id="@+id/info_box"
+        android:paddingLeft="-25dp"
+        android:paddingRight="-25dp"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/info_box"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp">
+        <ImageButton
+            android:layout_width="85dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/tick"
+            android:scaleType="fitCenter"
+            android:background="#006400"
+            android:id="@+id/chooseButton"
+            />
+
+        <ImageButton
+            android:layout_width="85dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/cross"
+            android:layout_toRightOf="@+id/chooseButton"
+            android:scaleType="fitCenter"
+            android:background="#EE0000"
+            android:id="@+id/nextButton"
+            android:layout_marginLeft="5dp"/>
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:id="@+id/nameOfThePlace"
+        android:text="Legal Seafoods"
+        android:textColor="#4169E1"
+        android:textSize="24dp"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameOfThePlace"
+        android:text="0.9 mi"
+        android:textSize="19dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#030303"
+        android:gravity="center"
+        android:id="@+id/distanceToPlace"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_centerHorizontal="true"
+        android:text="$$$"
+        android:layout_below="@+id/distanceToPlace"
+        android:textSize="19dp"
+        android:textColor="#030303"
+        android:gravity="center"
+        android:id="@+id/costOfPlace"
+        android:layout_marginLeft="5dp"/>
+
+
+</RelativeLayout>
