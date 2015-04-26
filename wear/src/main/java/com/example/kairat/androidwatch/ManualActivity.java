@@ -3,6 +3,8 @@ package com.example.kairat.androidwatch;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -45,7 +47,7 @@ public class ManualActivity extends Activity /*implements ChoicesFragment.Choice
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                // showChoiceButtons();
+                showChoiceButtons();
             }
         });
 
@@ -146,47 +148,85 @@ TimePicker Dialog
 
     */
 
-    public void chooseFood(View v){
-        sendChoice("food");
+    /**
+     * Assign onClick listeners to the buttons on the screen
+     */
+    public void showChoiceButtons(){
+        findViewById(R.id.parkButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //putImage();
+                MESSAGE = "park|amusement_park";
+                sendChoice();
+            }
+        });
+
+        findViewById(R.id.museumButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //putImage();
+                MESSAGE = "museum";
+                sendChoice();
+            }
+        });
+
+        findViewById(R.id.shoppingButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //putImage();
+                MESSAGE = "store|shopping_mall|department_store";
+                sendChoice();
+            }
+        });
+
+        findViewById(R.id.foodButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //putImage();
+                MESSAGE = "food";
+                sendChoice();
+            }
+        });
+
     }
 
-    public void chooseMuseum(View v){
-        sendChoice("museum");
-    }
-
-    public void choosePark(View v) {
-        sendChoice("park");
-    }
-
-    public void chooseShopping(View v){
-        sendChoice("shopping");
-    }
-
-    public void sendChoice(String choice) {
-        MESSAGE = choice;
+    /**
+     * Method for sending message to the mobile
+     */
+    public void sendChoice() {
         Log.d(TAG, nodeId);
         if (nodeId != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "SENDING CHOICE"+MESSAGE);
+                    Log.d(TAG, "Message being sent");
                     client.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
                     Wearable.MessageApi.sendMessage(client, nodeId, MESSAGE, null).setResultCallback(
                             new ResultCallback<MessageApi.SendMessageResult>() {
                                 @Override
                                 public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                                    if (!sendMessageResult.getStatus().isSuccess()){
+                                    if (!sendMessageResult.getStatus().isSuccess()) {
                                         Log.e(TAG, "Failed to send message with status code: "
                                                 + sendMessageResult.getStatus().getStatusCode());
                                     } else {
-                                        Log.i(TAG, "message was sent: "+sendMessageResult.getStatus().getStatusCode());
+                                        Log.e(TAG, "message was sent: "+sendMessageResult.getStatus().getStatusCode());
                                     }
                                 }
                             }
                     );
+                    client.disconnect();
+                    Log.d(TAG, "Client disconnected");
                 }
-            });
+            }).start();
         }
     }
 
+
+    /**
+     * Method for putting images to the new activity (Hardcoded for presentation)
+     */
+    public void putImage(){
+        Intent i = new Intent(this, ImageActivity.class);
+        startActivity(i);
+    }
 }

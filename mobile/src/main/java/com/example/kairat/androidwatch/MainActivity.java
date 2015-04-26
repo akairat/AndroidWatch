@@ -2,18 +2,29 @@ package com.example.kairat.androidwatch;
 
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Context;
+import android.content.IntentSender;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.location.*;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.Calendar;
 import java.util.Random;
-
-import android.widget.EditText;
 
 /*
 * JSON Format for JSONProcess Class "hour:min:activity:latitude:longitude"
@@ -23,12 +34,15 @@ import android.widget.EditText;
 * TODO: Fill in JSONProcess class with parsing method in the oncreate portion [reference animal sounds app]
 * */
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements
+    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private static int help_code = 3;
     private static int adventure_code= 5;
     private static int random_code= 6;
     private String myString;
+    private boolean mIsInResolution;
+    protected static final int REQUEST_CODE_RESOLUTION = 1;
 
     private int startHour;
     private int startMinute;
@@ -36,10 +50,25 @@ public class MainActivity extends ActionBarActivity {
     private double latitude;
     private double longitude;
 
+    private Location mLastLocation;
+    private Location mCurrentLocation;
+    private double mLat;
+    private double mLong;
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        buildGoogleApiClient();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     public void setStartTime(int hourOfDay, int minute) {
@@ -63,25 +92,30 @@ public class MainActivity extends ActionBarActivity {
         }, hour, minute, false);//No to 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
+        Context context = getApplicationContext();
+        CharSequence text = "Setting time";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     //Currently Location is being fudged - When null, will always give 32-144 geocode
     //TODO: Create location service
     public void getLocation(View view) {
         // Get the location manager
-        LocationManager locationManager = (LocationManager)
-                getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(bestProvider);
+
         try {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        } catch (NullPointerException e) {
+          createLocationRequest();
+        } catch (Exception e) {
             latitude = 42.361648260887;
             longitude = -71.0905194348;
         }
         System.out.println(latitude + "," + longitude);
+        Context context = getApplicationContext();
+        CharSequence text = "Location Set!";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     @Override
@@ -113,11 +147,17 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case 2:
                 pickActivity = "museum";
-
+                break;
             case 3:
                 pickActivity = "park|amusement_park";
+                break;
         }
         System.out.println(pickActivity);
+        Context context = getApplicationContext();
+        CharSequence text = pickActivity +" picked!";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
         //System DEBUG: Prints randomly selected activity
     }
 
@@ -145,6 +185,87 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        //Using GooglePlay Services Location API
+        mLastLocation= LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            mLat = mLastLocation.getLatitude();
+            mLong = mLastLocation.getLongitude();
+        }
+        System.out.println(mLat + "," + mLong);
+        Context context = getApplicationContext();
+        CharSequence text = "Location Set!";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    protected void createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrentLocation = location;
+        latitude = mCurrentLocation.getLatitude();
+        longitude = mCurrentLocation.getLongitude();
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} connection is suspended.
+     */
+    @Override
+    public void onConnectionSuspended(int cause) {
+        System.out.println("GoogleApiClient connection suspended");
+        retryConnecting();
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} is trying to connect but failed.
+     * Handle {@code result.getResolution()} if there is a resolution
+     * available.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        System.out.println("GoogleApiClient connection failed: " + result.toString());
+        if (!result.hasResolution()) {
+            // Show a localized error dialog.
+            GooglePlayServicesUtil.getErrorDialog(
+                    result.getErrorCode(), this, 0, new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            retryConnecting();
+                        }
+                    }).show();
+            return;
+        }
+        // If there is an existing resolution error being displayed or a resolution
+        // activity has started before, do nothing and wait for resolution
+        // progress to be completed.
+        if (mIsInResolution) {
+            return;
+        }
+        mIsInResolution = true;
+        try {
+            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+        } catch (IntentSender.SendIntentException e) {
+            System.out.println("Exception while starting resolution activity");
+            e.printStackTrace();
+            retryConnecting();
+        }
+    }
+
+    private void retryConnecting() {
+        mIsInResolution = false;
+        if (!mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+        }
     }
 }
 

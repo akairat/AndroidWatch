@@ -53,8 +53,8 @@ public class ResultActivity extends ActionBarActivity {
     // private String searchresultnumber ="?results=0:";
     //  private String searchParameters = "?results=0:10&fields=item_name,brand_name,brand_id,item_id,nf_calories,item_description,nf_total_carbohydrate,nf_protein,nf_total_fat,nf_cholesterol"; //the result we want to find
     // private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC&destinations=San+Francisco|Victoria+BC&mode=walking&language=en-EN&sensor=false"; //the result we want to find
-    private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins="; //the result we want to find
-    private String destinationlink = "&destinations=";
+    private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins=";
+    private String distancedestinations = "&destinations="; //the result we want to find
     private String distanceaddress = null;
     private String distancemode = "&mode=walking&language=en-EN&sensor=false";
 
@@ -79,6 +79,7 @@ public class ResultActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
@@ -87,10 +88,12 @@ public class ResultActivity extends ActionBarActivity {
         String qString = extras.getString("qString");
         String[] result_array = qString.split(":");
 
-        startHour =result_array[0].replaceAll(":", "");
-        startMinute =result_array[1].replaceAll(":", "");
-        pickActivity= result_array[2].replaceAll(":", "");
-        PlaceLocation =result_array[3].replaceAll(":", "") +","+result_array[4].replaceAll(":", "");
+        startHour =result_array[0];
+        startMinute =result_array[1];
+        PlaceType= result_array[2];
+        PlaceLocation =result_array[3] +","+result_array[4];
+
+        getPlaces(null);
 
         //get Your Current Location
       /*  String url2= PlacePhotodd+PlaceAPIKey;
@@ -143,10 +146,20 @@ public class ResultActivity extends ActionBarActivity {
         //    String y =  getDistanceInfo("Harvard, Cambridge", "MIT");
         //     TextView tv1 = (TextView) findViewById(R.id.textView3);
         //    tv1.setText(y);
+        String encodedInput1 = null;
 
-        apiUrl = PlaceLink+PlaceLocation+PlaceSetting+ pickActivity+PlaceAPIKey; //url for the API
-        new CallAPI1().execute(apiUrl); //do stuff with URL with parameter
+        try {
+            encodedInput1 = URLEncoder.encode(PlaceType, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.e(LOG_MESSAGE, "Encoding exception");
+            e.printStackTrace();
+        }
+        if (encodedInput1 != null) {
+            apiUrl = PlaceLink + PlaceLocation + PlaceSetting + PlaceType + PlaceAPIKey; //url for the API
 
+            Log.e(LOG_MESSAGE, "apiUrl:" +apiUrl);
+            new CallAPI1().execute(apiUrl); //do stuff with URL with parameter
+        }
     }
 
     private class CallAPI1 extends AsyncTask<String, String, String> { //this func takes 3 parameter; 1st: retutn type string; onPost exe stuuf; what type onPst takes as string
@@ -221,6 +234,7 @@ public class ResultActivity extends ActionBarActivity {
 
                 Log.i(LOG_MESSAGE, "Got it");
                 generate_place(place_list);
+                getWebResult(null);
                 //               showFoodEntries3(foodEntries);
                 // showFoodEntries4(place_details);
             }
@@ -270,11 +284,11 @@ public class ResultActivity extends ActionBarActivity {
         //String resultnumer = number.getText().toString();
         //searchParameters =  searchParameters;
 
-        EditText foodeditText = (EditText) findViewById(R.id.editText);
+        //  EditText foodeditText = (EditText) findViewById(R.id.editText);
 
-        String food = foodeditText.getText().toString();
+        //  String food = foodeditText.getText().toString();
 
-        TextView tv = (TextView) findViewById(R.id.textView);
+        //     TextView tv = (TextView) findViewById(R.id.textView);
         //  tv.setVisibility(View.INVISIBLE);
         // If we really get input from the user, we'll need to URL encode it before including it
         // in an HTTP request string
@@ -288,7 +302,7 @@ public class ResultActivity extends ActionBarActivity {
         }
 
         if (encodedInput != null) {
-            apiUrl = distancelink +PlaceLocation +destinationlink+ distanceaddress + distancemode ;
+            apiUrl = distancelink +PlaceLocation+ distancedestinations+distanceaddress + distancemode ;
             Log.e(LOG_MESSAGE, "apiUrl:" +apiUrl);
             //  apiUrl = searchParameters1;
             new CallAPI().execute(apiUrl); //do stuff with URL with parameter
@@ -368,8 +382,8 @@ public class ResultActivity extends ActionBarActivity {
 
                 Log.i(LOG_MESSAGE, "Got it");
                 showLocationEntries2(place_details); //nedd to comment these and leave one work
-                //               showFoodEntries3(foodEntries);
-                // showFoodEntries4(place_details);
+                updateChoice(null);
+
             }
         }
 

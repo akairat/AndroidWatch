@@ -26,15 +26,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SpeechActivity extends Activity {
+
     private static final int SPEECH_REQUEST_CODE = 0;
     private static final String TAG = "Wearable messages: ";
     private TextView mTextView;
-    GoogleApiClient mGoogleApiClient;
-    public static final String START_ACTIVITY_PATH = "/start/MainActivity";
-    TextView tv;
-    int CONNECTION_TIME_OUT_MS = 1000;
-
-    private boolean isConnectedToWearable;
+    private GoogleApiClient client;
+    public static String MESSAGE = "#";
+    int CONNECTION_TIME_OUT_MS = 100;
+    private String nodeId;
 
     private List<String> museumKeyWords;
     private List<String> landmarksKeyWords;
@@ -43,72 +42,22 @@ public class SpeechActivity extends Activity {
     private List<String> natureKeyWords;
     private List<String> suprisemeKeyWords;
 
-    String ss = "default";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                        Log.d(TAG, "onConnected: " + connectionHint);
-                        if (servicesAvailable()) {
-                            new CheckWearableConnected().execute();
-                        }
-                        // Now you can use the Data Layer API
-                    }
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                        Log.d(TAG, "onConnectionSuspended: " + cause);
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult result) {
-                        Log.d(TAG, "onConnectionFailed: " + result);
-                    }
-                })
-                        // Request access only to the Wearable API
-                .addApi(Wearable.API)
-                .build();
-
-        mGoogleApiClient.connect();
-
+        initApi();
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.kaira);
-                if (isConnectedToWearable == true){
-                    mTextView.setText("CONNECTED");
-                } else if (isConnectedToWearable == false) {
-                    mTextView.setText("NOT CONNECTED");
-                }
+                 mTextView = (TextView) stub.findViewById(R.id.kaira);
             }
         });
 
-        //tv = (TextView) findViewById(R.id.kaira);
-
-        new Thread(new Runnable() {
-            public void run() {
-                Collection<String> nodes = getNodes();
-                if (nodes.size() == 0) {
-                    ss = "no nodes to send message";
-                    Log.d(TAG, ss);
-                }
-                else {
-                    ss = nodes.toString();
-                    Log.d(TAG, ss);
-                }
-            }
-        }).start();
-
-
-        //displaySpeechRecognizer();
+        displaySpeechRecognizer();
 
         museumKeyWords = Arrays.asList("museum", "museums");
         landmarksKeyWords = Arrays.asList("landmarks", "landmark", "sightseeing");
@@ -118,6 +67,46 @@ public class SpeechActivity extends Activity {
         suprisemeKeyWords = Arrays.asList("surprise");
 
     }
+
+    /**
+     * Initialize API and connected device nodeId
+     */
+    private void initApi(){
+        client = getGoogleApiClient();
+        getDeviceNode();
+    }
+
+    /**
+     * create new GoogleApiClient to be able to send messages to the mobile
+     *
+     * @return new Wearable GoogleApiClient
+     */
+    private GoogleApiClient getGoogleApiClient(){
+        return new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
+    }
+
+    /**
+     * Get node and assign nodeId of the mobile connected to the watch
+     * (Since watch can connect to only one phone at a time, size of nodes should be 1)
+     */
+    private void getDeviceNode(){
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                NodeApi.GetConnectedNodesResult result = Wearable.NodeApi.getConnectedNodes(client).await();
+                List<Node> nodes = result.getNodes();
+                if (nodes.size() > 0){
+                    nodeId = nodes.get(0).getId();
+                }
+                client.disconnect();
+            }
+        });
+        th.start();
+    }
+
 
 
     // Create an intent that can start the Speech Recognizer activity
@@ -138,59 +127,87 @@ public class SpeechActivity extends Activity {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
+            parseSpeech(spokenText);
             //String[] inputStrings = spokenText.split("\\s+");
             mTextView.setText(spokenText);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void sendStartActivityMessage(String nodeId) {
-        Wearable.MessageApi.sendMessage(
-                mGoogleApiClient, nodeId, START_ACTIVITY_PATH, new byte[0]).setResultCallback(
-                new ResultCallback<MessageApi.SendMessageResult>() {
-                    @Override
-                    public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                        if (!sendMessageResult.getStatus().isSuccess()) {
-                            Log.e(TAG, "Failed to send message with status code: "
-                                    + sendMessageResult.getStatus().getStatusCode());
-                        }
-                    }
-                }
-        );
-    }
-
-    private List<String> getNodes() {
-        List<String> results = new ArrayList<String>();
-        NodeApi.GetConnectedNodesResult nodes =
-                Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-        for (Node node : nodes.getNodes()) {
-            results.add(node.getId());
-        }
-        return results;
-    }
-
-    private boolean servicesAvailable() {
-        // Check that Google Play Services are available
-        int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(this);
-
-        return (ConnectionResult.SUCCESS == resultCode);
-    }
-
-
-    private class CheckWearableConnected extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            NodeApi.GetConnectedNodesResult nodes =
-                    Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-
-            if (nodes != null && nodes.getNodes().size() > 0) {
-                isConnectedToWearable = true;
+    /**
+     * parse user spoken text and assign appropriate message
+     *
+     * @param spokenText
+     */
+    private void parseSpeech(String spokenText){
+        List<String> splitText = Arrays.asList(spokenText.toLowerCase().split("\\s+"));
+        if (splitText.contains("museum") || splitText.contains("museums")){
+            if (MESSAGE.equals("#")){
+                MESSAGE = "museum";
+            } else {
+                MESSAGE = MESSAGE + "|museum";
             }
+        }
 
-            return null;
+        if (splitText.contains("food") || splitText.contains("restaurant")
+                || splitText.contains("cafe") || splitText.contains("restaurants")
+                || splitText.contains("cafeteria")){
+            if (MESSAGE.equals("#")){
+                MESSAGE = "food";
+            } else {
+                MESSAGE = MESSAGE + "|food";
+            }
+        }
+
+        if (splitText.contains("park") || splitText.contains("wildlife")
+                || splitText.contains("nature") || splitText.contains("sightseeing")
+                || splitText.contains("landmarks") || splitText.contains("landmark")){
+            if (MESSAGE.equals("#")){
+                MESSAGE = "park|amusement_park";
+            } else {
+                MESSAGE += "|park|amusement_park";
+            }
+        }
+
+        if(splitText.contains("store") || splitText.contains("shopping")
+                || splitText.contains("mall")){
+            if (MESSAGE.equals("#")){
+                MESSAGE = "store|shopping_mall|department_store";
+            } else {
+                MESSAGE += "|store|shopping_mall|department_store";
+            }
         }
     }
 
+    /**
+     * Method for sending message to the mobile
+     */
+    private void sendMessage(){
+        if (nodeId != null){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    client.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                    Wearable.MessageApi.sendMessage(client, nodeId, MESSAGE, null).setResultCallback(
+                            new ResultCallback<MessageApi.SendMessageResult>() {
+                                @Override
+                                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                                    if (!sendMessageResult.getStatus().isSuccess()){
+                                        Log.e(TAG, "Failed to send message with status code: "
+                                                + sendMessageResult.getStatus().getStatusCode());
+                                    } else {
+                                        Log.d(TAG, "message sent successfully: "+sendMessageResult.getStatus().getStatusCode());
+                                    }
+                                }
+                            }
+                    );
+                    client.disconnect();
+
+                }
+            }).start();
+
+            // set message back to default
+            MESSAGE = "#";
+        }
+    }
 }
