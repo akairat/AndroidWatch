@@ -105,9 +105,10 @@ public class GetResultService extends IntentService {
 
         final ResultReceiver receiver = intent.getParcelableExtra("receiver");
         receiver1 = receiver;
-        String url = intent.getStringExtra("url");//the var we want from the activity
-        String PlaceType = intent.getStringExtra("PlaceType");
-        String PlaceLocation = intent.getStringExtra("PlaceLocation");
+     //   String url = intent.getStringExtra("url");//the var we want from the activity
+     //   String PlaceType = intent.getStringExtra("PlaceType");
+     //   String PlaceLocation = intent.getStringExtra("PlaceLocation");
+
         Bundle bundle = new Bundle();
         bundle1= bundle;
 
