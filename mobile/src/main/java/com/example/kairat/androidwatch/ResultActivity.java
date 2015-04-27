@@ -65,9 +65,6 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-  /*
-
-
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
@@ -83,9 +80,6 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         lat = Double.parseDouble(result_array[3]);
         lon = Double.parseDouble(result_array[4]);
         PlaceLocation = result_array[3]+","+result_array[4];
-
-        PlaceLocation = result_array[3]+","+result_array[4];*/
-
 
         call_intent();
 
@@ -153,7 +147,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 setProgressBarIndeterminateVisibility(false);
                 String[] place_name = resultData.getStringArray("place_name");
                 String[] place_address = resultData.getStringArray("place_address");
-                String[] place_geo = resultData.getStringArray("place_name");
+                String[] place_geo = resultData.getStringArray("place_geo");
                 String[] place_distance = resultData.getStringArray("place_distance");
                 String[] place_duration = resultData.getStringArray("place_duration");
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
