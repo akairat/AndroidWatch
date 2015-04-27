@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements
     private String myString;
     private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
 
     private int startHour;
     private int startMinute;
@@ -55,12 +56,15 @@ public class MainActivity extends ActionBarActivity implements
     private double mLat;
     private double mLong;
     private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        buildGoogleApiClient();
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
+        }
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -69,6 +73,24 @@ public class MainActivity extends ActionBarActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     public void setStartTime(int hourOfDay, int minute) {
@@ -103,13 +125,20 @@ public class MainActivity extends ActionBarActivity implements
     //TODO: Create location service
     public void getLocation(View view) {
         // Get the location manager
-
-        try {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
+        else {
+            System.out.println("Location was not obtained.");
+        }
+        /*try {
           createLocationRequest();
         } catch (Exception e) {
             latitude = 42.361648260887;
             longitude = -71.0905194348;
-        }
+        }*/
         System.out.println(latitude + "," + longitude);
         Context context = getApplicationContext();
         CharSequence text = "Location Set!";
@@ -201,13 +230,6 @@ public class MainActivity extends ActionBarActivity implements
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-    }
-
-    protected void createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override
