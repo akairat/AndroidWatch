@@ -64,8 +64,9 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_result);
+
+  /*
 
 
         Bundle extras = getIntent().getExtras();
@@ -79,7 +80,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         startHour =result_array[0];
         startMinute =result_array[1];
         PlaceType= result_array[2];
-        PlaceLocation = result_array[3]+","+result_array[4];
+        PlaceLocation = result_array[3]+","+result_array[4];*/
 
         //getPlaces(null);
 
@@ -155,6 +156,10 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 String[] place_distance = resultData.getStringArray("place_distance");
                 String[] place_duration = resultData.getStringArray("place_duration");
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
+                Log.i(LOG_MESSAGE, " PlacesInfo" + place_address);
+                Log.i(LOG_MESSAGE, " PlacesInfo" + place_geo);
+                Log.i(LOG_MESSAGE, " PlacesInfo" + place_distance);
+                Log.i(LOG_MESSAGE, " PlacesInfo" + place_duration);
                 suggested_place_name = Arrays.asList(place_name);
                 suggested_place_address= Arrays.asList(place_address);
                 suggested_place_geo = Arrays.asList(place_geo);
