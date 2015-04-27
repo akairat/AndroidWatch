@@ -9,33 +9,23 @@
         <TextView android:text="-Distance-" android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
-            android:layout_below="@+id/textView5"
-            android:layout_centerHorizontal="true"
             android:textSize="18dp"
-            android:layout_marginTop="5dp" />
+            android:layout_above="@+id/linearLayout3"
+            android:layout_alignEnd="@+id/textView5" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-Duration-"
-            android:id="@+id/textView2"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:textSize="18dp" />
-
-        <TextView
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="-Place Name-"
 
             android:id="@+id/textView4"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/result"
-            android:layout_marginTop="10dp"
-            android:textSize="20dp"
+        android:textSize="20dp"
             android:textColor="#ff5045ff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+        android:layout_marginBottom="37dp"
+        android:layout_above="@+id/textView5"
+        android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,25 +33,54 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="-Address-"
             android:id="@+id/textView5"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/textView4"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp" />
+            android:layout_above="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:weightSum="1"
+        android:id="@+id/linearLayout3"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_marginTop="30dp">
 
         <ImageView
+            android:layout_width="14dp"
+            android:layout_height="22dp"
+            android:id="@+id/imageView3"
+            android:layout_alignTop="@+id/textView"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/walkingman" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:layout_centerHorizontal="true"
-            android:minHeight="200dp"
-            android:minWidth="200dp"
-            android:layout_below="@+id/textView2"
-            android:layout_marginTop="10dp" />
+            android:text="-Duration-"
+            android:id="@+id/textView2"
+            android:layout_below="@+id/textView"
+            android:textSize="18dp"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.13" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:gravity="center_horizontal"
+        android:id="@+id/linearLayout2"
+        android:layout_marginBottom="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:id="@+id/imageButton"
             android:layout_below="@+id/imageView"
             android:src="@drawable/yes"
@@ -69,23 +88,15 @@
             android:layout_alignLeft="@+id/result" />
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageButton2"
-            android:onClick = "updateChoice"
-            android:src="@drawable/no"
-            android:layout_alignTop="@+id/imageButton"
-            android:layout_alignRight="@+id/result"
-            android:layout_alignEnd="@+id/result" />
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:id="@+id/imageButton2"
+                android:onClick = "updateChoice"
+                android:src="@drawable/no"
+                android:layout_below="@+id/imageView"
+                android:layout_toEndOf="@+id/imageButton" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="We suggest you going..."
-            android:id="@+id/result"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true" />
+    </LinearLayout>
 
 
 </RelativeLayout>
