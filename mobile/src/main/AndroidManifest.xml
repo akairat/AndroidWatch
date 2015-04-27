@@ -18,6 +18,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
         android:allowBackup="true"
@@ -58,16 +59,23 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".GPSService"
-            android:label="@string/title_activity_location_services" >
-        </activity>
-
         <service
             android:name=".GetResultService"
             android:exported="false" >
         </service>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Nav"
+            android:label="@string/title_activity_nav" >
+        </activity>
+        <activity
+            android:name=".GPSService"
+            android:label="@string/title_activity_gpsservice" >
+        </activity>
     </application>
 
 </manifest>
