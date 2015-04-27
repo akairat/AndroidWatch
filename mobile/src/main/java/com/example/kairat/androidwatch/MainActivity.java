@@ -1,6 +1,5 @@
 package com.example.kairat.androidwatch;
 
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,13 +24,6 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Calendar;
 import java.util.Random;
 
-/*
-* JSON Format for JSONProcess Class "hour:min:activity:latitude:longitude"
-* TODO: Decide on 4 Activities to have [icons]
-* TODO: Decide on what the Watch can send to phone
-* TODO: Add a general menu to the help menu class to display
-* TODO: Fill in JSONProcess class with parsing method in the oncreate portion [reference animal sounds app]
-* */
 
 public class MainActivity extends ActionBarActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
@@ -43,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements
     private String myString;
     private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
 
     private int startHour;
     private int startMinute;
@@ -52,15 +44,16 @@ public class MainActivity extends ActionBarActivity implements
 
     private Location mLastLocation;
     private Location mCurrentLocation;
-    private double mLat;
-    private double mLong;
     private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        buildGoogleApiClient();
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
+        }
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -69,6 +62,24 @@ public class MainActivity extends ActionBarActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     public void setStartTime(int hourOfDay, int minute) {
@@ -103,16 +114,24 @@ public class MainActivity extends ActionBarActivity implements
     //TODO: Create location service
     public void getLocation(View view) {
         // Get the location manager
-
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
+        else {
+            System.out.println("Location was not obtained.");
+        }
+        /* Commented out hardcoded Geocode of 32-144
         try {
           createLocationRequest();
         } catch (Exception e) {
             latitude = 42.361648260887;
             longitude = -71.0905194348;
-        }
+        }*/
         System.out.println(latitude + "," + longitude);
         Context context = getApplicationContext();
-        CharSequence text = "Location Set!";
+        CharSequence text = "Location Set to: "+ latitude + "," + longitude;
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
@@ -126,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void resetAll(View view) {
-        //reset all checkboxes
+        //reset all parameters
     }
     //Starts an that gives general directions on application use
     public void helpMenu(View view) {
@@ -192,22 +211,9 @@ public class MainActivity extends ActionBarActivity implements
         //Using GooglePlay Services Location API
         mLastLocation= LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            mLat = mLastLocation.getLatitude();
-            mLong = mLastLocation.getLongitude();
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
         }
-        System.out.println(mLat + "," + mLong);
-        Context context = getApplicationContext();
-        CharSequence text = "Location Set!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    protected void createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override
@@ -261,6 +267,19 @@ public class MainActivity extends ActionBarActivity implements
         }
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
     private void retryConnecting() {
         mIsInResolution = false;
         if (!mGoogleApiClient.isConnecting()) {

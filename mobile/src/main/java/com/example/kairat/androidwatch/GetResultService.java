@@ -56,12 +56,15 @@ public class GetResultService extends IntentService {
 
 
     /*the url for distance API = distancelink+distanceaddress+distancemode*/
-    private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins=-33.8670522,151.1957362&destinations="; //the result we want to find
+    private String distancelink = "http://maps.googleapis.com/maps/api/distancematrix/json?origins=";
+
+    private String destinationsetting = "&destinations=";
+
     private String distanceaddress = null;
     private String distancemode = "&mode=walking&language=en-EN&sensor=false";
-    /*the url for place API = PalceLink+PlaceLocation+PlaceSetting+PlaceType+PlaceAPIKey*/
+    /*the url for place API = PlaceLink+PlaceLocation+PlaceSetting+PlaceType+PlaceAPIKey*/
     private String PlaceLink = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=";
-    private String PlaceLocation = "-33.8670522,151.1957362";
+    private String PlaceLocation= "42.3613154,-71.0912821";
     private String PlaceSetting="&radius=500&opennow&types=";
     private String PlaceType="food";
 
@@ -72,8 +75,8 @@ public class GetResultService extends IntentService {
     private String PlaceAPIKey = "&key=AIzaSyCvsLNrxgNcWPXUav7Aay2lBO6kxqbOvQ8"; //url for the API
     private String apiUrl;
 
-    ResultReceiver receiver1;
-    Bundle bundle1;
+    ResultReceiver receiver;
+    Bundle bundle;
     /**
      * Starts this service to perform action Foo with the given parameters. If
      * the service is already performing a task this action will be queued.
@@ -103,13 +106,22 @@ public class GetResultService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "Service Started!");
 
-        final ResultReceiver receiver = intent.getParcelableExtra("receiver");
-        receiver1 = receiver;
-        String url = intent.getStringExtra("url");//the var we want from the activity
-        String PlaceType = intent.getStringExtra("PlaceType");
-        String PlaceLocation = intent.getStringExtra("PlaceLocation");
-        Bundle bundle = new Bundle();
-        bundle1= bundle;
+        receiver = intent.getParcelableExtra("receiver");
+
+        bundle = new Bundle();
+
+        if (bundle == null) {
+            return;
+        }
+
+     //   String url = intent.getStringExtra("url");//the var we want from the activity
+
+        //Commented out below because PlaceType and PlaceLocation are passed in as null for some reason?
+        //PlaceType = bundle.getString("PlaceType");
+        //System.out.println(PlaceType);
+        //PlaceLocation = bundle.getString("PlaceLocation");
+        //System.out.println(PlaceLocation);
+
 
         //   if (!TextUtils.isEmpty(url)) {
             /* Update UI: Download Service is Running */
@@ -120,7 +132,6 @@ public class GetResultService extends IntentService {
             Log.d(TAG, "Service Started2!");
 
         } catch (Exception e) {
-
                 /* Sending error message back to activity */
             bundle.putString(Intent.EXTRA_TEXT, e.toString());
             receiver.send(STATUS_ERROR, bundle);
@@ -180,14 +191,28 @@ public class GetResultService extends IntentService {
 
 
     public void getPlaces(View view) {
+        String encodedInput1 = null;
 
-        apiUrl = PlaceLink + PlaceLocation + PlaceSetting + PlaceType + PlaceAPIKey; //url for the API
-        new CallAPI1().execute(apiUrl); //do stuff with URL with parameter
+    /*    try {
+            encodedInput1 = URLEncoder.encode(PlaceLocation, "UTF-8");
+            encodedInput1 = URLEncoder.encode(PlaceType, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.e(LOG_MESSAGE, "Encoding exception");
+            e.printStackTrace();
+        }
+
+        if (encodedInput1 != null) {*/
+
+            apiUrl = PlaceLink + PlaceLocation + PlaceSetting + PlaceType + PlaceAPIKey; //url for the API
+                Log.e(LOG_MESSAGE, "apiUrl:" + apiUrl);
+                System.out.println(apiUrl);
+            new CallAPI1().execute(apiUrl); //do stuff with URL with parameter
+      //  }
 
     }
 
     private class CallAPI1 extends AsyncTask<String, String, String> { //this func takes 3 parameter; 1st: retutn type string; onPost exe stuuf; what type onPst takes as string
-        //put on a porgress bar to async task
+        //put on a progress bar to async task
 
 
         @Override
@@ -321,7 +346,7 @@ public class GetResultService extends IntentService {
         }
 
         if (encodedInput != null) {
-            apiUrl = distancelink + distanceaddress + distancemode;
+            apiUrl = distancelink + PlaceLocation +destinationsetting+distanceaddress + distancemode;
             Log.e(LOG_MESSAGE, "apiUrl:" + apiUrl);
             //  apiUrl = searchParameters1;
             new CallAPI().execute(apiUrl); //do stuff with URL with parameter
@@ -430,7 +455,7 @@ public class GetResultService extends IntentService {
                     suggested_place_distance.add(distance);
                     duration = duration1.getString("text");
                     suggested_place_duration.add(duration);
-                    int duration_vlaue = duration1.getInt("value");
+                    int duration_value = duration1.getInt("value");
 
                 }catch (JSONException e) {
                     Log.e(LOG_MESSAGE, e.getMessage());
@@ -443,7 +468,7 @@ public class GetResultService extends IntentService {
             Log.e(LOG_MESSAGE, e.getMessage());
             e.printStackTrace();
         }
-        store_info(bundle1,receiver1);
+        store_info(bundle,receiver);
     }
     //error handling
     public class ResultException extends Exception {
