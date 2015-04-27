@@ -167,6 +167,7 @@ public class GetResultService extends IntentService {
             bundle.putStringArray("place_geo", place_geo);
             bundle.putStringArray("place_distance", place_distance);
             bundle.putStringArray("place_duration", place_duration);
+
             receiver.send(STATUS_FINISHED, bundle);
         }
 
