@@ -24,13 +24,6 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Calendar;
 import java.util.Random;
 
-/*
-* JSON Format for JSONProcess Class "hour:min:activity:latitude:longitude"
-* TODO: Decide on 4 Activities to have [icons]
-* TODO: Decide on what the Watch can send to phone
-* TODO: Add a general menu to the help menu class to display
-* TODO: Fill in JSONProcess class with parsing method in the oncreate portion [reference animal sounds app]
-* */
 
 public class MainActivity extends ActionBarActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
@@ -51,8 +44,6 @@ public class MainActivity extends ActionBarActivity implements
 
     private Location mLastLocation;
     private Location mCurrentLocation;
-    private double mLat;
-    private double mLong;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
@@ -140,7 +131,7 @@ public class MainActivity extends ActionBarActivity implements
         }*/
         System.out.println(latitude + "," + longitude);
         Context context = getApplicationContext();
-        CharSequence text = "Location Set!";
+        CharSequence text = "Location Set to: "+ latitude + "," + longitude;
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
@@ -220,15 +211,9 @@ public class MainActivity extends ActionBarActivity implements
         //Using GooglePlay Services Location API
         mLastLocation= LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            mLat = mLastLocation.getLatitude();
-            mLong = mLastLocation.getLongitude();
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
         }
-        System.out.println(mLat + "," + mLong);
-        Context context = getApplicationContext();
-        CharSequence text = "Location Set to: "+ mLat + "," + mLong;
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 
     @Override
@@ -282,6 +267,19 @@ public class MainActivity extends ActionBarActivity implements
         }
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
     private void retryConnecting() {
         mIsInResolution = false;
         if (!mGoogleApiClient.isConnecting()) {
