@@ -108,7 +108,8 @@ public class GetResultService extends IntentService {
 
         receiver = intent.getParcelableExtra("receiver");
 
-        bundle = new Bundle();
+      // bundle = new Bundle();
+        bundle = intent.getExtras();
 
         if (bundle == null) {
             return;
@@ -117,10 +118,12 @@ public class GetResultService extends IntentService {
      //   String url = intent.getStringExtra("url");//the var we want from the activity
 
         //Commented out below because PlaceType and PlaceLocation are passed in as null for some reason?
-        //PlaceType = bundle.getString("PlaceType");
-        //System.out.println(PlaceType);
-        //PlaceLocation = bundle.getString("PlaceLocation");
-        //System.out.println(PlaceLocation);
+        PlaceType = bundle.getString("PlaceType");
+
+        PlaceLocation = bundle.getString("PlaceLocation");
+
+        Log.i(LOG_MESSAGE, "PlaceType" + PlaceType);
+        Log.i(LOG_MESSAGE, "PlaceLocation" + PlaceLocation);
 
 
         //   if (!TextUtils.isEmpty(url)) {
@@ -141,7 +144,8 @@ public class GetResultService extends IntentService {
         this.stopSelf();
     }
 
-    void store_info(Bundle bundle,ResultReceiver receiver){
+    void store_info(ResultReceiver receiver){
+        bundle = new Bundle();
         String[] place_name = new String[suggested_place_name.size()];
         String[] place_address = new String[suggested_place_address.size()];
         String[] place_geo = new String[suggested_place_geo.size()];
@@ -469,7 +473,7 @@ public class GetResultService extends IntentService {
             Log.e(LOG_MESSAGE, e.getMessage());
             e.printStackTrace();
         }
-        store_info(bundle,receiver);
+        store_info(receiver);
     }
     //error handling
     public class ResultException extends Exception {

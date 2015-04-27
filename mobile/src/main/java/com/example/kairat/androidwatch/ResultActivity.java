@@ -34,7 +34,7 @@ import java.util.List;
 
 public class ResultActivity extends ActionBarActivity implements DownloadResultReceiver.Receiver {
     int i =0;
-    private String LOG_MESSAGE = "WebAPIExample";
+    private String LOG_MESSAGE = "ResultActivity";
 
     List<String> suggested_place_name;
     List<String> suggested_place_address;
@@ -123,7 +123,8 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 /* Send optional extras to Download IntentService */
         intent.putExtra("PlaceType",PlaceType);
         intent.putExtra("PlaceLocation", PlaceLocation);
-
+        Log.i(LOG_MESSAGE, "PlaceType" + PlaceType);
+        Log.i(LOG_MESSAGE, "PlaceLocation" + PlaceLocation);
         intent.putExtra("receiver", mReceiver);
         intent.putExtra("requestId", 101);
 
