@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,26 +41,22 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     List<String> suggested_place_geo;
     List<String> suggested_place_distance;
     List<String> suggested_place_duration;
-////////////////////
+
     JSONArray place_details = null;
     JSONArray place_list= null;
 
-
-    private String longitude;
-    private String latitude;
     private String startHour;
     private String startMinute;
-    private String pickActivity;
+    private String PlaceType;
+    private String PlaceLocation;
 
     private String distance;
     private String duration;
 
-
-
-    private String PlaceLocation = "-33.8670522,151.1957362";
-    private String PlaceType="food";
-    private String PlacePhoto ="https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU";
-
+    //Hardcoded values:
+    //private String PlaceLocation = "-33.8670522,151.1957362";
+    //private String PlaceType="food";
+    //private String PlacePhoto ="https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU";
 
 
 
@@ -81,7 +79,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         startHour =result_array[0];
         startMinute =result_array[1];
         PlaceType= result_array[2];
-        PlaceLocation =result_array[3] +","+result_array[4];
+        PlaceLocation = result_array[3]+","+result_array[4];
 
         //getPlaces(null);
 
