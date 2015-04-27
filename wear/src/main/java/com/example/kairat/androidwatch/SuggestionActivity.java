@@ -3,6 +3,7 @@ package com.example.kairat.androidwatch;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
 import android.widget.TextView;
 
 public class SuggestionActivity extends Activity {
@@ -17,8 +18,18 @@ public class SuggestionActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                //mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
+    }
+
+
+    // Must implement these onClick methods
+    private void choiceMade(View v){
+
+    }
+
+    private void nextChoice(View v){
+
     }
 }

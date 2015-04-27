@@ -6,22 +6,65 @@
     tools:deviceIds="wear_square"
     android:background="#ffffff">
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="120dp"
+        android:id="@+id/layout_top1"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/gray_box"
-        android:scaleType="fitXY"
-        android:id="@+id/info_box"
-        android:paddingLeft="-25dp"
-        android:paddingRight="-25dp"/>
+        android:layout_marginRight="5dp">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/gray_box"
+            android:scaleType="fitXY"
+            android:id="@+id/info_box"
+            android:paddingLeft="-25dp"
+            android:paddingRight="-25dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nameOfThePlace"
+            android:text="Legal Seafoods"
+            android:textColor="#4169E1"
+            android:textSize="23dp"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameOfThePlace"
+            android:text="0.9 mi"
+            android:textSize="18dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#030303"
+            android:gravity="center"
+            android:id="@+id/distanceToPlace"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_centerHorizontal="true"
+            android:text="$$$"
+            android:layout_below="@+id/distanceToPlace"
+            android:textSize="19dp"
+            android:textColor="#030303"
+            android:gravity="center"
+            android:id="@+id/costOfPlace"
+            android:layout_marginTop="3dp"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/info_box"
+        android:layout_below="@+id/layout_top1"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="3dp"
@@ -33,6 +76,7 @@
             android:scaleType="fitCenter"
             android:background="#006400"
             android:id="@+id/chooseButton"
+            android:onClick="choiceMade"
         />
 
         <ImageButton
@@ -43,49 +87,8 @@
             android:scaleType="fitCenter"
             android:background="#EE0000"
             android:id="@+id/nextButton"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginLeft="5dp"
+            android:onClick="nextChoice"/>
     </RelativeLayout>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:id="@+id/nameOfThePlace"
-        android:text="Legal Seafoods"
-        android:textColor="#4169E1"
-        android:textSize="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameOfThePlace"
-        android:text="0.9 mi"
-        android:textSize="19dp"
-        android:layout_centerHorizontal="true"
-        android:textColor="#030303"
-        android:gravity="center"
-        android:id="@+id/distanceToPlace"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:layout_centerHorizontal="true"
-        android:text="$$$"
-        android:layout_below="@+id/distanceToPlace"
-        android:textSize="19dp"
-        android:textColor="#030303"
-        android:gravity="center"
-        android:id="@+id/costOfPlace"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"/>
 
 </RelativeLayout>

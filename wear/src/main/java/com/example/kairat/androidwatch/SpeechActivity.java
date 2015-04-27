@@ -35,13 +35,6 @@ public class SpeechActivity extends Activity {
     int CONNECTION_TIME_OUT_MS = 100;
     private String nodeId;
 
-    private List<String> museumKeyWords;
-    private List<String> landmarksKeyWords;
-    private List<String> nightlifeKeyWords;
-    private List<String> restaurantKeyWords;
-    private List<String> natureKeyWords;
-    private List<String> suprisemeKeyWords;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,14 +51,6 @@ public class SpeechActivity extends Activity {
         });
 
         displaySpeechRecognizer();
-
-        museumKeyWords = Arrays.asList("museum", "museums");
-        landmarksKeyWords = Arrays.asList("landmarks", "landmark", "sightseeing");
-        nightlifeKeyWords = Arrays.asList("nightlife", "clubs", "club", "bar", "bars");
-        restaurantKeyWords = Arrays.asList("restaurant", "restaurants", "cafe", "cafeteria");
-        natureKeyWords = Arrays.asList("nature", "wildlife");
-        suprisemeKeyWords = Arrays.asList("surprise");
-
     }
 
     /**
@@ -130,6 +115,8 @@ public class SpeechActivity extends Activity {
             parseSpeech(spokenText);
             //String[] inputStrings = spokenText.split("\\s+");
             mTextView.setText(spokenText);
+            parseSpeech(spokenText);
+            sendMessage();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

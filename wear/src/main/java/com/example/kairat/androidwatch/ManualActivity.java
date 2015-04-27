@@ -184,7 +184,8 @@ TimePicker Dialog
             public void onClick(View view) {
                 //putImage();
                 MESSAGE = "food";
-                sendChoice();
+                openSuggestion();
+                //sendChoice();
             }
         });
 
@@ -227,6 +228,11 @@ TimePicker Dialog
      */
     public void putImage(){
         Intent i = new Intent(this, ImageActivity.class);
+        startActivity(i);
+    }
+
+    private void openSuggestion(){
+        Intent i = new Intent(this, SuggestionActivity.class);
         startActivity(i);
     }
 }
