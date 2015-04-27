@@ -13,6 +13,16 @@
             android:layout_above="@+id/linearLayout3"
             android:layout_alignEnd="@+id/textView5" />
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView2"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/backgrounmap"
+        android:alpha="0.5"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -97,6 +107,13 @@
                 android:layout_toEndOf="@+id/imageButton" />
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/textView5" />
 
 
 </RelativeLayout>
