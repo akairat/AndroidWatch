@@ -1,5 +1,6 @@
 package com.example.kairat.androidwatch;
 
+import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -131,8 +133,7 @@ public class MainActivity extends ActionBarActivity implements
         else {
             System.out.println("Location was not obtained.");
         }
-        /* Commented out hardcoded Geocode of 32-144
-        try {
+        /*try {
           createLocationRequest();
         } catch (Exception e) {
             latitude = 42.361648260887;
@@ -154,7 +155,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void resetAll(View view) {
-        //reset all parameters
+        //reset all checkboxes
     }
     //Starts an that gives general directions on application use
     public void helpMenu(View view) {
@@ -225,7 +226,7 @@ public class MainActivity extends ActionBarActivity implements
         }
         System.out.println(mLat + "," + mLong);
         Context context = getApplicationContext();
-        CharSequence text = "Location Set to: "+ mLat + "," + mLong;
+        CharSequence text = "Location Set!";
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
