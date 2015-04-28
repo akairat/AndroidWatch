@@ -1,5 +1,6 @@
 package com.example.kairat.androidwatch;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,8 +49,8 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 
     private String startHour;
     private String startMinute;
-    private String PlaceType;
-    private String PlaceLocation;
+    private String PlaceType = "musuem|park";
+    private String PlaceLocation= "42.3613154,-71.0912821";
     private double lat, lon;
 
     private String[] selectedPlace =
@@ -56,12 +58,17 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                                                                           //only selectedPlace[1] will be passed to the GoogleMaps activity
 
 
+    ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        Bundle extras = getIntent().getExtras();
+        progress = new ProgressDialog(ResultActivity.this); //start the loading buffer
+        this.progress.setMessage("loading...");
+        this.progress.show();
+
+       Bundle extras = getIntent().getExtras(); //send bundle to get result  service
         if (extras == null) {
             return;
         }
@@ -157,7 +164,9 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 suggested_place_distance = Arrays.asList(place_distance);
                 suggested_place_duration = Arrays.asList(place_duration);
                 updateChoice(null);
-
+                if (progress.isShowing()) { //if the loading buffer is showing, stop it
+                    progress.cancel();
+                }
                 break;
             case GetResultService.STATUS_ERROR:
                 /* Handle the error */
@@ -167,36 +176,57 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         }
     }
     /********************************Get all the places that are close by****************************************/
-
+    int j =0;
     public void updateChoice(View view) {
+
         // List<String> [] PlacesInfo3 = new ArrayList[5];
 
         if (i>=suggested_place_name.size())
             i=0;
 
         TextView tv = (TextView) findViewById(R.id.textView4);
-        String temp = suggested_place_name.get(i);
-        Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
-        tv.setText(temp);
-        selectedPlace[0] = temp;
-
         TextView tv2 = (TextView) findViewById(R.id.textView5);
-        temp = suggested_place_address.get(i);
-        Log.i(LOG_MESSAGE, " PlacesInfo"+ temp);
-        tv2.setText(temp);
-        selectedPlace[1] = temp;
-
         TextView tv3 = (TextView) findViewById(R.id.textView);
-        temp = suggested_place_distance.get(i);
-        Log.i(LOG_MESSAGE, " PlacesInfo"+ temp);
-        tv3.setText(temp);
-        selectedPlace[2] = temp;
-
         TextView tv4 = (TextView) findViewById(R.id.textView2);
-        temp = suggested_place_duration.get(i);
-        Log.i(LOG_MESSAGE, " PlacesInfo"+ temp);
-        tv4.setText(temp);
-        selectedPlace[3]= temp;
+        ImageView iv = (ImageView) findViewById(R.id.imageView3);
+        if (suggested_place_name.get(i).equals("-")){
+
+            String temp1 = PlaceType.replaceAll("\\|"," or ");
+            String showResult = temp1.replaceAll("_"," ");
+            String temp = "Sorry, there is no "+ showResult + " nearby";
+            Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
+            tv.setText(temp);
+            tv2.setVisibility(View.INVISIBLE);
+            tv3.setVisibility(View.INVISIBLE);
+            tv4.setVisibility(View.INVISIBLE);
+            iv.setVisibility(View.INVISIBLE);
+            for(j=0; j<=3; j++)
+                selectedPlace[j] = "-";
+
+        }
+        else
+        {
+
+            String temp = suggested_place_name.get(i);
+            Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
+            tv.setText(temp);
+            selectedPlace[0] = temp;
+
+            temp = suggested_place_address.get(i);
+            Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
+            tv2.setText("Address: " + temp);
+            selectedPlace[1] = temp;
+
+            temp = suggested_place_distance.get(i);
+            Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
+            tv3.setText("Distance: "+temp);
+            selectedPlace[2] = temp;
+
+            temp = suggested_place_duration.get(i);
+            Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
+            tv4.setText("Duration: "+temp);
+            selectedPlace[3] = temp;
+        }
         i++;
     }
 

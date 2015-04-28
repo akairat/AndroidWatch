@@ -64,9 +64,9 @@ public class GetResultService extends IntentService {
     private String distancemode = "&mode=walking&language=en-EN&sensor=false";
     /*the url for place API = PlaceLink+PlaceLocation+PlaceSetting+PlaceType+PlaceAPIKey*/
     private String PlaceLink = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=";
-    private String PlaceLocation= "42.3613154,-71.0912821";
+    private String PlaceLocation;//= "42.3613154,-71.0912821";
     private String PlaceSetting="&radius=500&opennow&types=";
-    private String PlaceType="food";
+    private String PlaceType;//="museum";
 
     /*testing to insert photo from photo API, not use*/
     private String PlacePhoto ="https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU";
@@ -109,7 +109,7 @@ public class GetResultService extends IntentService {
         receiver = intent.getParcelableExtra("receiver");
 
       // bundle = new Bundle();
-        bundle = intent.getExtras();
+      bundle = intent.getExtras();
 
         if (bundle == null) {
             return;
@@ -146,35 +146,56 @@ public class GetResultService extends IntentService {
 
     void store_info(ResultReceiver receiver){
         bundle = new Bundle();
-        String[] place_name = new String[suggested_place_name.size()];
-        String[] place_address = new String[suggested_place_address.size()];
-        String[] place_geo = new String[suggested_place_geo.size()];
-        String[] place_distance = new String[suggested_place_distance.size()];
-        String[] place_duration = new String[suggested_place_duration.size()];
+        if (distanceaddress != null) {
+            String[] place_name = new String[suggested_place_name.size()];
+            String[] place_address = new String[suggested_place_address.size()];
+            String[] place_geo = new String[suggested_place_geo.size()];
+            String[] place_distance = new String[suggested_place_distance.size()];
+            String[] place_duration = new String[suggested_place_duration.size()];
 
                 /* Sending result back to activity */
-        if (null != place_name && place_name.length > 0) {
+            if (null != place_name && place_name.length > 0) {
 
-            Log.d(TAG, "Service Started3!"+suggested_place_name);
-            Log.d(TAG, "Service Started3!"+suggested_place_address);
-            Log.d(TAG, "Service Started3!"+suggested_place_geo);
-            Log.d(TAG, "Service Started3!"+suggested_place_distance);
+                Log.d(TAG, "Service Started3!" + suggested_place_name);
+                Log.d(TAG, "Service Started3!" + suggested_place_address);
+                Log.d(TAG, "Service Started3!" + suggested_place_geo);
+                Log.d(TAG, "Service Started3!" + suggested_place_distance);
 
-            place_name = suggested_place_name.toArray(place_name);
-            place_address = suggested_place_address.toArray(place_address);
-            place_geo = suggested_place_geo.toArray(place_geo);
-            place_distance = suggested_place_distance.toArray(place_distance);
-            place_duration = suggested_place_duration.toArray(place_duration);
+                place_name = suggested_place_name.toArray(place_name);
+                place_address = suggested_place_address.toArray(place_address);
+                place_geo = suggested_place_geo.toArray(place_geo);
+                place_distance = suggested_place_distance.toArray(place_distance);
+                place_duration = suggested_place_duration.toArray(place_duration);
 
-            bundle.putStringArray("place_name",  place_name);
-            bundle.putStringArray("place_address", place_address);
-            bundle.putStringArray("place_geo", place_geo);
-            bundle.putStringArray("place_distance", place_distance);
-            bundle.putStringArray("place_duration", place_duration);
+                bundle.putStringArray("place_name", place_name);
+                bundle.putStringArray("place_address", place_address);
+                bundle.putStringArray("place_geo", place_geo);
+                bundle.putStringArray("place_distance", place_distance);
+                bundle.putStringArray("place_duration", place_duration);
 
-            receiver.send(STATUS_FINISHED, bundle);
+                receiver.send(STATUS_FINISHED, bundle);
+            }
         }
+        else {
+                String[] place_name = new String[1];
+                String[] place_address = new String[1];
+                String[] place_geo = new String[1];
+                String[] place_distance = new String[1];
+                String[] place_duration = new String[1];
+                place_name[0] = "-";
+                place_address[0] = "-";
+                place_geo[0] = "-";
+                place_distance[0] = "-";
+                place_duration[0] = "-";
 
+                bundle.putStringArray("place_name", place_name);
+                bundle.putStringArray("place_address", place_address);
+                bundle.putStringArray("place_geo", place_geo);
+                bundle.putStringArray("place_distance", place_distance);
+                bundle.putStringArray("place_duration", place_duration);
+
+                receiver.send(STATUS_FINISHED, bundle);
+         }
     }
     /**
      * Handle action Foo in the provided background thread with the provided
@@ -275,7 +296,7 @@ public class GetResultService extends IntentService {
             try {
                 JSONObject jObject = new JSONObject(result);
                 place_list = jObject.getJSONArray("results");
-                Log.i(LOG_MESSAGE, "JSON Object retrieved");
+                Log.i(LOG_MESSAGE, "JSON Object retrieved"+place_list);
 
             } catch (JSONException e) {
                 Log.e(LOG_MESSAGE, "Could not find result entry in JSON result");
@@ -289,7 +310,10 @@ public class GetResultService extends IntentService {
                 Log.i(LOG_MESSAGE, "Got it");
                 //Log.e(LOG_MESSAGE, place_details.toString());
                 generate_place(place_list);
-                getWebResult(null);
+                if (distanceaddress!=null)
+                    getWebResult(null);
+                else
+                    store_info(receiver);
                 //               showFoodEntries3(foodEntries);
                 // showFoodEntries4(place_details);
             }

@@ -10,8 +10,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             android:textSize="18dp"
+            android:gravity="center|center_vertical"
             android:layout_above="@+id/linearLayout3"
-            android:layout_alignEnd="@+id/textView5" />
+            android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="fill_parent"
@@ -34,8 +35,9 @@
             android:textColor="#ff5045ff"
             android:textStyle="bold"
         android:layout_marginBottom="37dp"
-        android:layout_above="@+id/textView5"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:gravity="center|center_vertical" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,11 +45,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="-Address-"
             android:id="@+id/textView5"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_above="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="32dp"
+            android:layout_below="@+id/textView4"
+            android:gravity="center|center_vertical"
+            android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -56,8 +57,8 @@
         android:weightSum="1"
         android:id="@+id/linearLayout3"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/textView4"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="30dp"
+        android:gravity="center|center_vertical">
 
         <ImageView
             android:layout_width="14dp"
