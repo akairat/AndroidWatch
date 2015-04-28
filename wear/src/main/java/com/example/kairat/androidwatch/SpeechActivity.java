@@ -116,6 +116,7 @@ public class SpeechActivity extends Activity {
             //String[] inputStrings = spokenText.split("\\s+");
             mTextView.setText(spokenText);
             parseSpeech(spokenText);
+            Log.d(TAG, MESSAGE);
             sendMessage();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -170,6 +171,7 @@ public class SpeechActivity extends Activity {
      * Method for sending message to the mobile
      */
     private void sendMessage(){
+        Log.d(TAG, "MESSAGE BEING SENT");
         if (nodeId != null){
             new Thread(new Runnable() {
                 @Override

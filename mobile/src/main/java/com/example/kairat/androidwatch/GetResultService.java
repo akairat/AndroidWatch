@@ -275,7 +275,7 @@ public class GetResultService extends IntentService {
             try {
                 JSONObject jObject = new JSONObject(result);
                 place_list = jObject.getJSONArray("results");
-
+                Log.i(LOG_MESSAGE, "JSON Object retrieved");
 
             } catch (JSONException e) {
                 Log.e(LOG_MESSAGE, "Could not find result entry in JSON result");
@@ -287,6 +287,7 @@ public class GetResultService extends IntentService {
 
 
                 Log.i(LOG_MESSAGE, "Got it");
+                //Log.e(LOG_MESSAGE, place_details.toString());
                 generate_place(place_list);
                 getWebResult(null);
                 //               showFoodEntries3(foodEntries);

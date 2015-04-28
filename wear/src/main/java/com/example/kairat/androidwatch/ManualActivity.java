@@ -24,10 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ManualActivity extends Activity /*implements ChoicesFragment.ChoicesFragmentListener*/ {
 
-    private TextView mTextView;
-    private int startHour;
-    private int startMinute;
-
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static String MESSAGE = "#";
 
@@ -184,8 +180,8 @@ TimePicker Dialog
             public void onClick(View view) {
                 //putImage();
                 MESSAGE = "food";
-                openSuggestion();
-                //sendChoice();
+                //openSuggestion();
+                sendChoice();
             }
         });
 

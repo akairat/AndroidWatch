@@ -29,7 +29,7 @@
             android:id="@+id/nameOfThePlace"
             android:text="Legal Seafoods"
             android:textColor="#4169E1"
-            android:textSize="23dp"
+            android:textSize="20dp"
             android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
             android:gravity="center"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/nameOfThePlace"
             android:text="0.9 mi"
-            android:textSize="18dp"
+            android:textSize="16dp"
             android:layout_centerHorizontal="true"
             android:textColor="#030303"
             android:gravity="center"
@@ -53,11 +53,10 @@
             android:layout_centerHorizontal="true"
             android:text="$$$"
             android:layout_below="@+id/distanceToPlace"
-            android:textSize="19dp"
+            android:textSize="16dp"
             android:textColor="#030303"
             android:gravity="center"
-            android:id="@+id/costOfPlace"
-            android:layout_marginTop="3dp"/>
+            android:id="@+id/addressOfPlace"/>
 
     </RelativeLayout>
 

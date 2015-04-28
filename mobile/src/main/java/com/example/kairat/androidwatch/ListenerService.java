@@ -23,10 +23,15 @@ import android.location.*;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import org.json.JSONArray;
@@ -35,13 +40,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ListenerService extends WearableListenerService implements DownloadResultReceiver.Receiver {
 
     private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
 
     private String pickActivity;
     private double latitude;
@@ -107,6 +112,15 @@ public class ListenerService extends WearableListenerService implements Download
                 suggested_place_distance = Arrays.asList(place_distance);
                 suggested_place_duration = Arrays.asList(place_duration);
 
+                for (int i = 0; i < suggested_place_address.size(); i++){
+                    MESSAGE = MESSAGE + suggested_place_name.get(i) + "#"
+                            + suggested_place_distance.get(i) + "#"
+                            + suggested_place_duration.get(i) + "#"
+                            + suggested_place_address.get(i) + "#"
+                            + suggested_place_geo.get(i) + "*";
+                }
+
+                sendChoice();
 
                 break;
             case GetResultService.STATUS_ERROR:
@@ -125,6 +139,86 @@ public class ListenerService extends WearableListenerService implements Download
         PlaceLocation = "42.3613154,-71.0912821";
 
         call_intent();
+
+        initApi();
+    }
+
+
+    //////////////// Methods and fields for sending message/////////////
+
+    private GoogleApiClient client;
+    private String nodeId;
+    private static final long CONNECTION_TIME_OUT_MS = 100;
+    private static String MESSAGE = "";
+
+    /**
+     * Initializes the GoogleApiClient and gets the Node ID of the connected device.
+     */
+    private void initApi() {
+        client = getGoogleApiClient(this);
+        retrieveDeviceNode();
+    }
+
+    /**
+     * Returns a GoogleApiClient that can access the Wear API.
+     * @param context
+     * @return A GoogleApiClient that can make calls to the Wear API
+     */
+    private GoogleApiClient getGoogleApiClient(Context context) {
+        return new GoogleApiClient.Builder(context)
+                .addApi(Wearable.API)
+                .build();
+    }
+
+    /**
+     * Connects to the GoogleApiClient and retrieves the connected device's Node ID. If there are
+     * multiple connected devices, the first Node ID is returned.
+     */
+    private void retrieveDeviceNode() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                NodeApi.GetConnectedNodesResult result =
+                        Wearable.NodeApi.getConnectedNodes(client).await();
+                List<Node> nodes = result.getNodes();
+                if (nodes.size() > 0) {
+                    nodeId = nodes.get(0).getId();
+                }
+                client.disconnect();
+            }
+        }).start();
+    }
+
+    /**
+     * Method for sending message to the mobile
+     */
+    public void sendChoice() {
+        Log.d(TAG, nodeId);
+        if (nodeId != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "Message being sent");
+                    client.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                    Wearable.MessageApi.sendMessage(client, nodeId, MESSAGE, null).setResultCallback(
+                            new ResultCallback<MessageApi.SendMessageResult>() {
+                                @Override
+                                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                                    if (!sendMessageResult.getStatus().isSuccess()) {
+                                        Log.e(TAG, "Failed to send message with status code: "
+                                                + sendMessageResult.getStatus().getStatusCode());
+                                    } else {
+                                        Log.e(TAG, "message was sent: "+sendMessageResult.getStatus().getStatusCode());
+                                    }
+                                }
+                            }
+                    );
+                    client.disconnect();
+                    Log.d(TAG, "Client disconnected");
+                }
+            }).start();
+        }
     }
 
 }

@@ -15,11 +15,13 @@ public class WearListenerService extends WearableListenerService{
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Message Received");
+        Log.d(TAG, messageEvent.getPath());
         queryMessage(messageEvent.getPath());
     }
 
     private void queryMessage(String message) {
         Intent i = new Intent(this, SuggestionActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("suggestions", message);
         startActivity(i);
     }
