@@ -24,11 +24,11 @@ public class SuggestionActivity extends Activity {
     private ImageButton chooseButton;
     private ImageButton nextButton;
 
-    private List<String> suggested_place_name = new ArrayList<String>();
-    private List<String> suggested_place_address = new ArrayList<String>();
-    private List<String> suggested_place_geo = new ArrayList<String>();
-    private List<String> suggested_place_distance = new ArrayList<String>();
-    private List<String> suggested_place_duration = new ArrayList<String>();
+    private List<String> suggested_place_name;
+    private List<String> suggested_place_address;
+    private List<String> suggested_place_geo;
+    private List<String> suggested_place_distance;
+    private List<String> suggested_place_duration;
 
     private int place_index = 1;
 
@@ -40,13 +40,19 @@ public class SuggestionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggestion);
 
+        suggested_place_name = new ArrayList<String>();
+        suggested_place_address = new ArrayList<String>();
+        suggested_place_geo = new ArrayList<String>();
+        suggested_place_distance = new ArrayList<String>();
+        suggested_place_duration = new ArrayList<String>();
+
         Bundle extras = getIntent().getExtras();
 
         String places = "";
         if (extras != null) {
             places = extras.getString("suggestions");
         }
-
+        Log.d("PLACES RECEIVED", places);
         List<String> list_places = Arrays.asList(places.split("\\*"));
         max_index = list_places.size();
 
@@ -68,10 +74,15 @@ public class SuggestionActivity extends Activity {
                 nameOfPlace = (TextView) stub.findViewById(R.id.nameOfThePlace);
                 addressOfPlace = (TextView) stub.findViewById(R.id.addressOfPlace);
 
-                nameOfPlace.setText(suggested_place_name.get(0));
-                distanceAndTimeToPlace.setText(suggested_place_distance.get(0) + ", " + suggested_place_duration.get(0));
-                addressOfPlace.setText(suggested_place_address.get(0));
-
+                if (suggested_place_name.get(0).equals("-")){
+                    nameOfPlace.setText("No Suggestions.");
+                    distanceAndTimeToPlace.setText("");
+                    addressOfPlace.setText("");
+                } else {
+                    nameOfPlace.setText(suggested_place_name.get(0));
+                    distanceAndTimeToPlace.setText(suggested_place_distance.get(0) + ", " + suggested_place_duration.get(0));
+                    addressOfPlace.setText(suggested_place_address.get(0));
+                }
                 chooseButton = (ImageButton) stub.findViewById(R.id.chooseButton);
                 nextButton = (ImageButton) stub.findViewById(R.id.nextButton);
 
@@ -120,4 +131,16 @@ public class SuggestionActivity extends Activity {
             addressOfPlace.setText("");
         }
     }
+
+    @Override
+    public void onStop() {
+        Log.e("MOBILE MESSAGE:", "Suggestions activity has been stopped");
+        super.onStop();  // Always call the superclass method first
+        suggested_place_duration = new ArrayList<String>();
+        suggested_place_geo = new ArrayList<String>();
+        suggested_place_address = new ArrayList<String>();
+        suggested_place_distance = new ArrayList<String>();
+        suggested_place_name = new ArrayList<String>();
+    }
+
 }

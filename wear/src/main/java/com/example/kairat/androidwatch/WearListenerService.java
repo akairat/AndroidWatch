@@ -10,7 +10,7 @@ import com.google.android.gms.wearable.WearableListenerService;
 public class WearListenerService extends WearableListenerService{
 
 
-    private static final String TAG = "MOBILE MESSAGE: ";
+    private static final String TAG = "MOBILE MESSAGE:";
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {

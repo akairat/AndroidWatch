@@ -101,11 +101,11 @@ public class ListenerService extends WearableListenerService implements Download
                 String[] place_geo = resultData.getStringArray("place_geo");
                 String[] place_distance = resultData.getStringArray("place_distance");
                 String[] place_duration = resultData.getStringArray("place_duration");
-                Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
-                Log.i(LOG_MESSAGE, " PlacesInfo" + place_address);
-                Log.i(LOG_MESSAGE, " PlacesInfo" + place_geo);
-                Log.i(LOG_MESSAGE, " PlacesInfo" + place_distance);
-                Log.i(LOG_MESSAGE, " PlacesInfo" + place_duration);
+                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
+                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_address);
+                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_geo);
+                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_distance);
+                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_duration);
                 suggested_place_name = Arrays.asList(place_name);
                 suggested_place_address= Arrays.asList(place_address);
                 suggested_place_geo = Arrays.asList(place_geo);
@@ -120,8 +120,8 @@ public class ListenerService extends WearableListenerService implements Download
                             + suggested_place_geo.get(i) + "*";
                 }
 
+                Log.i(LOG_MESSAGE, MESSAGE);
                 sendChoice();
-
                 break;
             case GetResultService.STATUS_ERROR:
                 /* Handle the error */
@@ -135,6 +135,7 @@ public class ListenerService extends WearableListenerService implements Download
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Message Received");
+        MESSAGE = "";
         PlaceType = messageEvent.getPath();
         PlaceLocation = "42.3613154,-71.0912821";
 
@@ -149,7 +150,7 @@ public class ListenerService extends WearableListenerService implements Download
     private GoogleApiClient client;
     private String nodeId;
     private static final long CONNECTION_TIME_OUT_MS = 100;
-    private static String MESSAGE = "";
+    private static String MESSAGE;
 
     /**
      * Initializes the GoogleApiClient and gets the Node ID of the connected device.
@@ -211,6 +212,7 @@ public class ListenerService extends WearableListenerService implements Download
                                     } else {
                                         Log.e(TAG, "message was sent: "+sendMessageResult.getStatus().getStatusCode());
                                     }
+                                    //MESSAGE = "";
                                 }
                             }
                     );
