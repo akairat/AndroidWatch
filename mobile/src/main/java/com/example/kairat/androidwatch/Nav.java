@@ -70,10 +70,7 @@ public class Nav extends FragmentActivity {
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * add a marker for our location
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     * Set up a map with a marker for our location
      */
     private void setUpMap() {
         LatLng latlng = new LatLng(user_Lat, user_Long);

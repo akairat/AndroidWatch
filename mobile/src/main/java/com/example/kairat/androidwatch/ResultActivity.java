@@ -230,6 +230,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         i++;
     }
 
+    //Starts navigation activity
     public void startNavigation (View view){
         Intent sn = new Intent(this, Nav.class);
         String info = selectedPlace[1]+":"+lat+":"+lon;
