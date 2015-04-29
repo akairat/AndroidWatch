@@ -20,7 +20,7 @@ public class Nav extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
-        setUpMapIfNeeded();
+
 
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -32,6 +32,7 @@ public class Nav extends FragmentActivity {
         user_Lat = Double.parseDouble(result_array[1]);
         user_Long = Double.parseDouble(result_array[2]);
         System.out.println(user_Lat +","+ user_Long);
+        setUpMapIfNeeded();
     }
 
     @Override
@@ -70,16 +71,18 @@ public class Nav extends FragmentActivity {
 
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
+     * add a marker for our location
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(user_Lat, user_Long)).title("Your Location"));
+        LatLng latlng = new LatLng(user_Lat, user_Long);
+        mMap.addMarker(new MarkerOptions().position(latlng).title("Your Location"));
         System.out.println("BOOM Marker");
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         System.out.println("Map Type Set");
-        LatLng latlng = new LatLng(user_Lat, user_Long);
+
+        System.out.println(latlng + "OKAY THEN");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
         System.out.println("Zoom");

@@ -234,7 +234,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         Intent sn = new Intent(this, Nav.class);
         String info = selectedPlace[1]+":"+lat+":"+lon;
         sn.putExtra("aString", info);
-        System.out.println("WHOOO GO");
+        System.out.println("WHOOOO GO" + info);
         startActivity(sn);
 
     }
