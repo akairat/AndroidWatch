@@ -10,6 +10,7 @@ import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -154,6 +155,12 @@ TimePicker Dialog
                 //putImage();
                 MESSAGE = "park|amusement_park";
                 sendChoice();
+                Context context = getApplicationContext();
+                CharSequence text = "Please wait...";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
@@ -163,6 +170,12 @@ TimePicker Dialog
                 //putImage();
                 MESSAGE = "museum";
                 sendChoice();
+                Context context = getApplicationContext();
+                CharSequence text = "Please wait...";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
@@ -172,6 +185,12 @@ TimePicker Dialog
                 //putImage();
                 MESSAGE = "store|shopping_mall|department_store";
                 sendChoice();
+                Context context = getApplicationContext();
+                CharSequence text = "Please wait...";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
@@ -182,6 +201,12 @@ TimePicker Dialog
                 MESSAGE = "food";
                 //openSuggestion();
                 sendChoice();
+                Context context = getApplicationContext();
+                CharSequence text = "Please wait...";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 

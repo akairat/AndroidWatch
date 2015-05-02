@@ -96,6 +96,7 @@ public class SpeechActivity extends Activity {
 
     // Create an intent that can start the Speech Recognizer activity
     private void displaySpeechRecognizer() {
+        MESSAGE = "#";
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -114,8 +115,8 @@ public class SpeechActivity extends Activity {
             String spokenText = results.get(0);
             parseSpeech(spokenText);
             //String[] inputStrings = spokenText.split("\\s+");
-            mTextView.setText(spokenText);
-            parseSpeech(spokenText);
+            //mTextView.setText(spokenText);
+            parseSpeech(spokenText.toLowerCase());
             Log.d(TAG, MESSAGE);
             sendMessage();
         }
@@ -194,9 +195,15 @@ public class SpeechActivity extends Activity {
 
                 }
             }).start();
-
-            // set message back to default
-            MESSAGE = "#";
         }
     }
+
+    /*
+    @Override
+    public void onResume(){
+
+        super.onResume();
+        displaySpeechRecognizer();
+    }
+    */
 }
