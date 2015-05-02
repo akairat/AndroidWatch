@@ -13,6 +13,8 @@ public class Nav extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private String address;
+    private double placelat;
+    private double placelong;
     private double user_Lat;
     private double user_Long;
 
@@ -21,7 +23,6 @@ public class Nav extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
 
-
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
@@ -29,9 +30,12 @@ public class Nav extends FragmentActivity {
         String aString = extras.getString("aString");
         String[] result_array = aString.split(":");
         address = result_array[0];
-        user_Lat = Double.parseDouble(result_array[1]);
-        user_Long = Double.parseDouble(result_array[2]);
-        System.out.println(user_Lat +","+ user_Long);
+        placelat = Double.parseDouble(result_array[1]);
+        placelong = Double.parseDouble(result_array[2]);
+        user_Lat = Double.parseDouble(result_array[3]);
+        user_Long = Double.parseDouble(result_array[4]);
+        System.out.println("YEAYEAH"+user_Lat +","+ user_Long);
+        System.out.println("OKAYTEHH"+placelat +","+ placelong);
         setUpMapIfNeeded();
     }
 
@@ -75,13 +79,15 @@ public class Nav extends FragmentActivity {
     private void setUpMap() {
         LatLng latlng = new LatLng(user_Lat, user_Long);
         mMap.addMarker(new MarkerOptions().position(latlng).title("Your Location"));
+        LatLng mDestination = new LatLng(placelat, placelong);
+        mMap.addMarker(new MarkerOptions().position(mDestination).title("Your Destination"));
         System.out.println("BOOM Marker");
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         System.out.println("Map Type Set");
 
         System.out.println(latlng + "OKAY THEN");
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         System.out.println("Zoom");
         // Will add in functionality to search for final destination
         // mMap.addMarker(new MarkerOptions().position(new LatLng(place_Lat, place_Long)).title("Destination"));

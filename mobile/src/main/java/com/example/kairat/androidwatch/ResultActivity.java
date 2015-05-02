@@ -52,9 +52,8 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     private String PlaceType = "musuem|park";
     private String PlaceLocation= "42.3613154,-71.0912821";
     private double lat, lon;
-
     private String[] selectedPlace =
-            {"placename","placeaddress","placedistance","placeduration"}; //Temp option to be shown to the user
+            {"placename","placeaddress","placedistance","placeduration", "placelat", "placelong"}; //Temp option to be shown to the user
                                                                           //only selectedPlace[1] will be passed to the GoogleMaps activity
 
 
@@ -166,6 +165,16 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 updateChoice(null);
                 if (progress.isShowing()) { //if the loading buffer is showing, stop it
                     progress.cancel();
+                    TextView tv = (TextView) findViewById(R.id.textView4);
+                    TextView tv2 = (TextView) findViewById(R.id.textView5);
+                    TextView tv3 = (TextView) findViewById(R.id.textView);
+                    TextView tv4 = (TextView) findViewById(R.id.textView2);
+                    ImageView iv = (ImageView) findViewById(R.id.imageView3);
+                    tv.setVisibility(View.VISIBLE);
+                    tv2.setVisibility(View.VISIBLE);
+                    tv3.setVisibility(View.VISIBLE);
+                    tv4.setVisibility(View.VISIBLE);
+                    iv.setVisibility(View.VISIBLE);
                 }
                 break;
             case GetResultService.STATUS_ERROR:
@@ -222,10 +231,14 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
             tv3.setText("Distance: "+temp);
             selectedPlace[2] = temp;
 
+
             temp = suggested_place_duration.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv4.setText("Duration: "+temp);
             selectedPlace[3] = temp;
+
+            //selectedPlace = suggested_place_geo.get(i);
+            //Log.i(LOG_MESSAGE, "Geo " + placelat + placelong);
         }
         i++;
     }
@@ -237,6 +250,5 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         sn.putExtra("aString", info);
         System.out.println("WHOOOO GO" + info);
         startActivity(sn);
-
     }
 }
