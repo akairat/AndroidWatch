@@ -11,16 +11,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:id="@+id/layout_top1">
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:src="@drawable/gray_box"
-            android:scaleType="fitXY"
-            android:id="@+id/info_box"
-            android:paddingLeft="-25dp"
-            android:paddingRight="-25dp"/>
+        android:id="@+id/layout_top1"
+        android:background="@drawable/box">
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,8 +20,8 @@
             android:id="@+id/nameOfThePlace"
             android:text="Legal Seafoods"
             android:textColor="#4169E1"
-            android:textSize="23dp"
-            android:layout_marginTop="24dp"
+            android:textSize="20dp"
+            android:layout_marginTop="18dp"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             />
@@ -39,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/nameOfThePlace"
             android:text="0.9 mi"
-            android:textSize="19dp"
+            android:textSize="16dp"
             android:layout_centerHorizontal="true"
             android:textColor="#030303"
             android:gravity="center"
@@ -48,11 +40,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginLeft="7dp"
             android:layout_centerHorizontal="true"
             android:text="$$$"
             android:layout_below="@+id/distanceToPlace"
-            android:textSize="19dp"
+            android:textSize="16dp"
             android:textColor="#030303"
             android:gravity="center"
             android:id="@+id/costOfPlace"
@@ -60,34 +53,36 @@
 
         </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/layout_top1"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="5dp">
+
         <ImageButton
-            android:layout_width="85dp"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:src="@drawable/tick"
+            android:src="@drawable/checkmark"
             android:scaleType="fitCenter"
             android:background="#006400"
             android:id="@+id/chooseButton"
-            android:onClick="choiceMade"
+            android:padding="4dp"
             />
 
         <ImageButton
-            android:layout_width="85dp"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:src="@drawable/cross"
             android:layout_toRightOf="@+id/chooseButton"
             android:scaleType="fitCenter"
             android:background="#EE0000"
             android:id="@+id/nextButton"
-            android:layout_marginLeft="5dp"
-            android:onClick="nextChoice"/>
-    </RelativeLayout>
+            android:padding="4dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

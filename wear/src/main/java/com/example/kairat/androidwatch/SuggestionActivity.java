@@ -2,6 +2,7 @@ package com.example.kairat.androidwatch;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
@@ -29,6 +30,8 @@ public class SuggestionActivity extends Activity {
     private List<String> suggested_place_geo;
     private List<String> suggested_place_distance;
     private List<String> suggested_place_duration;
+
+    private boolean refreshOn = false;
 
     private int place_index = 1;
 
@@ -74,15 +77,6 @@ public class SuggestionActivity extends Activity {
                 nameOfPlace = (TextView) stub.findViewById(R.id.nameOfThePlace);
                 addressOfPlace = (TextView) stub.findViewById(R.id.addressOfPlace);
 
-                if (suggested_place_name.get(0).equals("-")){
-                    nameOfPlace.setText("No Suggestions.");
-                    distanceAndTimeToPlace.setText("");
-                    addressOfPlace.setText("");
-                } else {
-                    nameOfPlace.setText(suggested_place_name.get(0));
-                    distanceAndTimeToPlace.setText(suggested_place_distance.get(0) + ", " + suggested_place_duration.get(0));
-                    addressOfPlace.setText(suggested_place_address.get(0));
-                }
                 chooseButton = (ImageButton) stub.findViewById(R.id.chooseButton);
                 nextButton = (ImageButton) stub.findViewById(R.id.nextButton);
 
@@ -99,6 +93,19 @@ public class SuggestionActivity extends Activity {
                         nextChoice(v);
                     }
                 });
+
+                if (suggested_place_name.get(0).equals("-")){
+                    nameOfPlace.setText("No Suggestions.");
+                    distanceAndTimeToPlace.setText("");
+                    addressOfPlace.setText("");
+                    nextButton.setEnabled(false);
+                    chooseButton.setEnabled(false);
+                } else {
+                    nameOfPlace.setText(suggested_place_name.get(0));
+                    distanceAndTimeToPlace.setText(suggested_place_distance.get(0) + ", " + suggested_place_duration.get(0));
+                    addressOfPlace.setText(suggested_place_address.get(0));
+                }
+
             }
         });
     }
@@ -108,8 +115,8 @@ public class SuggestionActivity extends Activity {
     private void choiceMade(View v){
         if(place_index < max_index){
             // Send the correct choice to the mobile to open the map
-        } else {
-            // do nothing
+            String coordinatesOfPlace = suggested_place_geo.get(place_index);
+
         }
     }
 
@@ -125,10 +132,27 @@ public class SuggestionActivity extends Activity {
             distanceAndTimeToPlace.setText(suggested_place_distance.get(place_index) + ", " + suggested_place_duration.get(place_index));
             addressOfPlace.setText(suggested_place_address.get(place_index));
             place_index++;
-        } else {
-            nameOfPlace.setText("No Suggestions.");
+        } else if (place_index >= max_index && !refreshOn){
+            nameOfPlace.setText("No Suggestions Left");
             distanceAndTimeToPlace.setText("");
             addressOfPlace.setText("");
+            nextButton.setImageResource(R.drawable.refresh);
+            nextButton.setBackgroundColor(Color.parseColor("#283593"));
+            refreshOn = true;
+        } else if (refreshOn){
+            nextButton.setImageResource(R.drawable.cross);
+            nextButton.setBackgroundColor(Color.parseColor("#EE0000"));
+            place_index = 0;
+            String name = suggested_place_name.get(place_index);
+            if(name.length() < 20){
+                nameOfPlace.setText(name);
+            } else{
+                nameOfPlace.setText(name.substring(0, 18)+".");
+            }
+            distanceAndTimeToPlace.setText(suggested_place_distance.get(place_index) + ", " + suggested_place_duration.get(place_index));
+            addressOfPlace.setText(suggested_place_address.get(place_index));
+            refreshOn = false;
+            place_index++;
         }
     }
 
