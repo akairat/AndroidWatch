@@ -92,7 +92,7 @@
             android:id="@+id/button2"
             android:onClick="randomAct"
             android:layout_above="@+id/editText"
-            android:background="#fffff36b"
+            android:background="#C0C0C0"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:paddingLeft="10dp"
@@ -107,7 +107,7 @@
             android:onClick="startNext"
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/analogClock"
-            android:background="#ff3ec216"
+            android:background="#C0C0C0"
             android:layout_marginRight="20dp" />
 
     </LinearLayout>
