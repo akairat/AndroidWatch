@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -148,12 +149,12 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                     TextView tv2 = (TextView) findViewById(R.id.textView5);
                     TextView tv3 = (TextView) findViewById(R.id.textView);
                     TextView tv4 = (TextView) findViewById(R.id.textView2);
-                    ImageView iv = (ImageView) findViewById(R.id.imageView3);
+                    //ImageView iv = (ImageView) findViewById(R.id.imageView3);
                     tv.setVisibility(View.VISIBLE);
                     tv2.setVisibility(View.VISIBLE);
                     tv3.setVisibility(View.VISIBLE);
                     tv4.setVisibility(View.VISIBLE);
-                    iv.setVisibility(View.VISIBLE);
+
                 }
                 break;
             case GetResultService.STATUS_ERROR:
@@ -165,35 +166,56 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     }
     /********************************Get all the places that are close by****************************************/
     int j =0;
+
     public void updateChoice(View view) {
-
-        // List<String> [] PlacesInfo3 = new ArrayList[5];
-
-        if (i>=suggested_place_name.size())
-            i=0;
-
         TextView tv = (TextView) findViewById(R.id.textView4);
         TextView tv2 = (TextView) findViewById(R.id.textView5);
         TextView tv3 = (TextView) findViewById(R.id.textView);
         TextView tv4 = (TextView) findViewById(R.id.textView2);
         ImageView iv = (ImageView) findViewById(R.id.imageView3);
+        ImageButton btn1 = (ImageButton) findViewById(R.id.imageButton);
+        ImageButton btn2 = (ImageButton) findViewById(R.id.imageButton2);
+        ImageButton btn3 = (ImageButton) findViewById(R.id.imageButton3);
+
+        // List<String> [] PlacesInfo3 = new ArrayList[5];
+        if (i==(suggested_place_name.size()-1)) {
+
+            btn2.setImageResource(R.drawable.restart);
+        }
+
+        if (i>=suggested_place_name.size()) {
+            i = 0;
+            btn2.setImageResource(R.drawable.no);
+        }
+
+
+
         if (suggested_place_name.get(i).equals("-")){
 
             String temp1 = PlaceType.replaceAll("\\|"," or ");
             String showResult = temp1.replaceAll("_"," ");
-            String temp = "Sorry, there is no "+ showResult + " nearby! Trying going back and picking a different activity!";
+            String temp = "Sorry, there is no "+ showResult + " nearby!";
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
-            tv2.setVisibility(View.INVISIBLE);
+            tv2.setText("Trying going back and picking a different activity!");
+            //tv2.setVisibility(View.INVISIBLE);
             tv3.setVisibility(View.INVISIBLE);
             tv4.setVisibility(View.INVISIBLE);
             iv.setVisibility(View.INVISIBLE);
+
+            btn1.setVisibility(View.INVISIBLE);
+            btn2.setVisibility(View.INVISIBLE);
+            btn3.setVisibility(View.VISIBLE);
             for(j=0; j<=3; j++)
                 selectedPlace[j] = "-";
 
         }
         else
-        {   String temp = suggested_place_name.get(i);
+        {   btn1.setVisibility(View.VISIBLE);
+            btn2.setVisibility(View.VISIBLE);
+            btn3.setVisibility(View.INVISIBLE);
+            iv.setVisibility(View.VISIBLE);
+            String temp = suggested_place_name.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
             selectedPlace[0] = temp;
@@ -219,7 +241,9 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         }
         i++;
     }
-
+    public void closeScreen (View view){
+        finish();
+    }
     //Starts navigation activity
     public void startNavigation (View view){
         if (selectedPlace[0].equals("-")) {

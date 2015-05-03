@@ -23,7 +23,8 @@
         android:src="@drawable/backgrounmap"
         android:alpha="0.5"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+         />
 
 <!--Place Name-->
     <TextView
@@ -105,7 +106,19 @@
             android:layout_below="@+id/imageView"
             android:src="@drawable/yes"
             android:onClick = "startNavigation"
-            android:layout_alignLeft="@+id/result" />
+            android:layout_alignLeft="@+id/result"
+            android:visibility="invisible"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:id="@+id/imageButton3"
+            android:onClick = "closeScreen"
+            android:src="@drawable/back"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/imageView"
+            android:layout_toEndOf="@+id/imageButton"
+            android:visibility="invisible"/>
 
         <ImageButton
                 android:layout_width="wrap_content"
@@ -114,7 +127,9 @@
                 android:onClick = "updateChoice"
                 android:src="@drawable/no"
                 android:layout_below="@+id/imageView"
-                android:layout_toEndOf="@+id/imageButton" />
+                android:layout_toEndOf="@+id/imageButton"
+                android:visibility="invisible"/>
+
 
     </LinearLayout>
 
