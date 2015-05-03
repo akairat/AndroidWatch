@@ -1,35 +1,23 @@
 package com.example.kairat.androidwatch;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,20 +31,12 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     List<String> suggested_place_geo;
     List<String> suggested_place_distance;
     List<String> suggested_place_duration;
-    List<String> suggested_place_budget;
-    List<String> suggested_place_lat;
-    List<String> suggested_place_long;
 
-    JSONArray place_details = null;
-    JSONArray place_list= null;
-
-    private String startHour;
-    private String startMinute;
-    private String PlaceType = "musuem|park";
-    private String PlaceLocation= "42.3613154,-71.0912821";
+    private String PlaceType;
+    private String PlaceLocation;
     private double lat, lon;
     private String[] selectedPlace =
-            {"placename","placeaddress","placedistance","placeduration", "placelat", "placelong"}; //Temp option to be shown to the user
+            {"placename","placeaddress","placedistance","placeduration", "placegeo"}; //Temp option to be shown to the user
                                                                           //only selectedPlace[1] will be passed to the GoogleMaps activity
 
 
@@ -67,7 +47,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         setContentView(R.layout.activity_result);
 
         progress = new ProgressDialog(ResultActivity.this); //start the loading buffer
-        this.progress.setMessage("loading...");
+        this.progress.setMessage("Searching for suggestions nearby!");
         this.progress.show();
 
        Bundle extras = getIntent().getExtras(); //send bundle to get result  service
@@ -78,13 +58,10 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         String qString = extras.getString("qString");
         String[] result_array = qString.split(":");
 
-        startHour =result_array[0]; //Time not actually used in decision making due to Google's place info limitations
-        startMinute =result_array[1]; //" "
-        PlaceType= result_array[2];
-
-        lat = Double.parseDouble(result_array[3]);
-        lon = Double.parseDouble(result_array[4]);
-        PlaceLocation = result_array[3]+","+result_array[4];
+        PlaceType= result_array[0];
+        lat = Double.parseDouble(result_array[1]);
+        lon = Double.parseDouble(result_array[2]);
+        PlaceLocation = result_array[1]+","+result_array[2];
 
         call_intent();
     }
@@ -155,9 +132,6 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 String[] place_geo = resultData.getStringArray("place_geo");
                 String[] place_distance = resultData.getStringArray("place_distance");
                 String[] place_duration = resultData.getStringArray("place_duration");
-                String[] place_budget = resultData.getStringArray("place_budget");
-                String[] place_lat = resultData.getStringArray("place_lat");
-                String[] place_long = resultData.getStringArray("place_long");
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_address);
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_geo);
@@ -175,12 +149,12 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                     TextView tv2 = (TextView) findViewById(R.id.textView5);
                     TextView tv3 = (TextView) findViewById(R.id.textView);
                     TextView tv4 = (TextView) findViewById(R.id.textView2);
-                    ImageView iv = (ImageView) findViewById(R.id.imageView3);
+                    //ImageView iv = (ImageView) findViewById(R.id.imageView3);
                     tv.setVisibility(View.VISIBLE);
                     tv2.setVisibility(View.VISIBLE);
                     tv3.setVisibility(View.VISIBLE);
                     tv4.setVisibility(View.VISIBLE);
-                    iv.setVisibility(View.VISIBLE);
+
                 }
                 break;
             case GetResultService.STATUS_ERROR:
@@ -192,36 +166,56 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     }
     /********************************Get all the places that are close by****************************************/
     int j =0;
+
     public void updateChoice(View view) {
-
-        // List<String> [] PlacesInfo3 = new ArrayList[5];
-
-        if (i>=suggested_place_name.size())
-            i=0;
-
         TextView tv = (TextView) findViewById(R.id.textView4);
         TextView tv2 = (TextView) findViewById(R.id.textView5);
         TextView tv3 = (TextView) findViewById(R.id.textView);
         TextView tv4 = (TextView) findViewById(R.id.textView2);
-        TextView tv5 = (TextView) findViewById(R.id.textView6);
         ImageView iv = (ImageView) findViewById(R.id.imageView3);
+        ImageButton btn1 = (ImageButton) findViewById(R.id.imageButton);
+        ImageButton btn2 = (ImageButton) findViewById(R.id.imageButton2);
+        ImageButton btn3 = (ImageButton) findViewById(R.id.imageButton3);
+
+        // List<String> [] PlacesInfo3 = new ArrayList[5];
+        if (i==(suggested_place_name.size()-1)) {
+
+            btn2.setImageResource(R.drawable.restart);
+        }
+
+        if (i>=suggested_place_name.size()) {
+            i = 0;
+            btn2.setImageResource(R.drawable.no);
+        }
+
+
+
         if (suggested_place_name.get(i).equals("-")){
 
             String temp1 = PlaceType.replaceAll("\\|"," or ");
             String showResult = temp1.replaceAll("_"," ");
-            String temp = "Sorry, there is no "+ showResult + " nearby";
+            String temp = "Sorry, there is no "+ showResult + " nearby!";
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
-            tv2.setVisibility(View.INVISIBLE);
+            tv2.setText("Trying going back and picking a different activity!");
+            //tv2.setVisibility(View.INVISIBLE);
             tv3.setVisibility(View.INVISIBLE);
             tv4.setVisibility(View.INVISIBLE);
             iv.setVisibility(View.INVISIBLE);
+
+            btn1.setVisibility(View.INVISIBLE);
+            btn2.setVisibility(View.INVISIBLE);
+            btn3.setVisibility(View.VISIBLE);
             for(j=0; j<=3; j++)
                 selectedPlace[j] = "-";
 
         }
         else
-        {   String temp = suggested_place_name.get(i);
+        {   btn1.setVisibility(View.VISIBLE);
+            btn2.setVisibility(View.VISIBLE);
+            btn3.setVisibility(View.INVISIBLE);
+            iv.setVisibility(View.VISIBLE);
+            String temp = suggested_place_name.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
             selectedPlace[0] = temp;
@@ -239,35 +233,31 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 
             temp = suggested_place_duration.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
-            tv4.setText("Duration: "+temp);
+            tv4.setText("Walking Time: "+ temp);
             selectedPlace[3] = temp;
 
-            temp = suggested_place_budget.get(i);
-            if (temp.equals("0"))
-                tv5.setText("Free!");
-            else if (temp.equals("1"))
-                tv5.setText("$");
-            else if (temp.equals("2"))
-                tv5.setText("$$");
-            else if (temp.equals("3"))
-                tv5.setText("$$$");
-            else if (temp.equals("4"))
-                tv5.setText("$$$$");
-
-            selectedPlace[4] = suggested_place_lat.get(i);
-            selectedPlace[5] = suggested_place_long.get(i);
-            //selectedPlace = suggested_place_geo.get(i);
-            //Log.i(LOG_MESSAGE, "Geo " + placelat + placelong);
+            selectedPlace[4] = suggested_place_geo.get(i);
+            Log.i(LOG_MESSAGE, "Geo " + selectedPlace[4]);
         }
         i++;
     }
-
+    public void closeScreen (View view){
+        finish();
+    }
     //Starts navigation activity
     public void startNavigation (View view){
-        Intent sn = new Intent(this, Nav.class);
-        String info = selectedPlace[1]+":"+lat+":"+lon;
-        sn.putExtra("aString", info);
-        System.out.println("WHOOOO GO" + info);
-        startActivity(sn);
+        if (selectedPlace[0].equals("-")) {
+            Context context = getApplicationContext();
+            CharSequence text = "Try picking a different category!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+        else {
+            Intent sn = new Intent(this, Nav.class);
+            String info = selectedPlace[4] + ":" + lat + ":" + lon + ":" + selectedPlace[0];
+            sn.putExtra("aString", info);
+            startActivity(sn);
+        }
     }
 }

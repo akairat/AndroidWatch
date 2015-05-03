@@ -2,6 +2,7 @@ package com.example.kairat.androidwatch;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
@@ -16,7 +17,12 @@ public class WearListenerService extends WearableListenerService{
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Message Received");
         Log.d(TAG, messageEvent.getPath());
-        queryMessage(messageEvent.getPath());
+        if (messageEvent.getPath().equals("map")){
+            // get the map and show it to the user
+            byte[] mapImage = messageEvent.getData();
+        } else {
+            queryMessage(messageEvent.getPath());
+        }
     }
 
     private void queryMessage(String message) {

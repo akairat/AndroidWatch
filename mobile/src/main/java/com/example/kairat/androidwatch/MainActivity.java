@@ -1,6 +1,5 @@
 package com.example.kairat.androidwatch;
 
-import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
@@ -10,42 +9,34 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TimePicker;
 import android.widget.Toast;
 import android.location.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.Calendar;
 import java.util.Random;
 
 
 public class MainActivity extends ActionBarActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
-    private static int help_code = 3;
     private static int adventure_code= 5;
-    private static int random_code= 6;
     private String myString;
     private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+    Toast toast;
 
-    private int startHour;
-    private int startMinute;
     private String pickActivity;
     private double latitude;
     private double longitude;
 
     private Location mLastLocation;
-    private Location mCurrentLocation;
     private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,37 +73,7 @@ public class MainActivity extends ActionBarActivity implements
         return true;
     }
 
-    public void setStartTime(int hourOfDay, int minute) {
-        startHour = hourOfDay;
-        startMinute = minute;
-    }
-
-    public void clickTime(View view) {
-        // TODO Auto-generated method stub
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                setStartTime(selectedHour,selectedMinute);
-                //System.out.println(startHour + " " + startMinute);
-                //DEBUG statement above: Basically prints to console the time in 24 hour format
-            }
-        }, hour, minute, false);//No to 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-        Context context = getApplicationContext();
-        CharSequence text = "Setting time";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    //Currently Location is being fudged - When null, will always give 32-144 geocode
-    //TODO: Create location service
-    public void getLocation(View view) {
+    public void getLocation() {
         // Get the location manager
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
@@ -122,19 +83,6 @@ public class MainActivity extends ActionBarActivity implements
         else {
             System.out.println("Location was not obtained.");
         }
-        /* Commented out hardcoded Geocode of 32-144
-        try {
-          createLocationRequest();
-        } catch (Exception e) {
-            latitude = 42.361648260887;
-            longitude = -71.0905194348;
-        }*/
-        System.out.println(latitude + "," + longitude);
-        Context context = getApplicationContext();
-        CharSequence text = "Location Set to: "+ latitude + "," + longitude;
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 
     @Override
@@ -144,13 +92,29 @@ public class MainActivity extends ActionBarActivity implements
         return true;
     }
 
-    public void resetAll(View view) {
-        //reset all parameters
+
+    public void setFood(View view) {
+        pickActivity = "food";
+        toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
+        toast.show();
     }
-    //Starts an that gives general directions on application use
-    public void helpMenu(View view) {
-        Intent hm = new Intent(this, helpMenu.class);
-        startActivityForResult(hm, help_code);
+
+    public void setPark(View view) {
+        pickActivity = "park|amusement_park";
+        toast = Toast.makeText(getApplicationContext(), "Parks picked!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void setMuseum(View view) {
+        pickActivity = "museum";
+        toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void setShopping(View view) {
+        pickActivity = "store|shopping_mall|department_store";
+        toast = Toast.makeText(getApplicationContext(), "Shopping picked!", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     //Uses a random number generator to pick an activity to do
@@ -171,22 +135,15 @@ public class MainActivity extends ActionBarActivity implements
                 pickActivity = "park|amusement_park";
                 break;
         }
-        System.out.println(pickActivity);
-        Context context = getApplicationContext();
-        CharSequence text = pickActivity +" picked!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-        //System DEBUG: Prints randomly selected activity
     }
 
     //Uses the user's selections to start the next activity
     //With regards to the watch: time picker + voice activation will be used to pick items
         //pressing "go" on the watch will pass in appropriate JSON info the JSONProcess class
     public void startNext(View view) {
+        getLocation();
         Intent i = new Intent(this, ResultActivity.class);
-        myString = startHour+":"+startMinute+":"+pickActivity+":"+latitude+":"+longitude;
-        System.out.println(myString);
+        myString = pickActivity+":"+latitude+":"+longitude;
         i.putExtra("qString", myString);
         startActivityForResult(i, adventure_code);
     }
@@ -218,9 +175,9 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        latitude = mCurrentLocation.getLatitude();
-        longitude = mCurrentLocation.getLongitude();
+        mLastLocation = location;
+        latitude = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
     }
 
     /**

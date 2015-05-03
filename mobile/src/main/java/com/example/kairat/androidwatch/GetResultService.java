@@ -155,10 +155,6 @@ public class GetResultService extends IntentService {
             String[] place_geo = new String[suggested_place_geo.size()];
             String[] place_distance = new String[suggested_place_distance.size()];
             String[] place_duration = new String[suggested_place_duration.size()];
-            String[] place_budget = new String[suggested_place_budget.size()];
-            String[] place_lat = new String[suggested_place_lat.size()];
-            String[] place_long = new String[suggested_place_long.size()];
-
                 /* Sending result back to activity */
             if (null != place_name && place_name.length > 0) {
 
@@ -172,14 +168,12 @@ public class GetResultService extends IntentService {
                 place_geo = suggested_place_geo.toArray(place_geo);
                 place_distance = suggested_place_distance.toArray(place_distance);
                 place_duration = suggested_place_duration.toArray(place_duration);
-                place_budget = suggested_place_budget.toArray(place_duration);
 
                 bundle.putStringArray("place_name", place_name);
                 bundle.putStringArray("place_address", place_address);
                 bundle.putStringArray("place_geo", place_geo);
                 bundle.putStringArray("place_distance", place_distance);
                 bundle.putStringArray("place_duration", place_duration);
-                bundle.putStringArray("place_budget", place_budget);
 
                 receiver.send(STATUS_FINISHED, bundle);
             }
@@ -215,23 +209,6 @@ public class GetResultService extends IntentService {
 
                 receiver.send(STATUS_FINISHED, bundle);
          }
-    }
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
 
@@ -509,7 +486,6 @@ public class GetResultService extends IntentService {
                     suggested_place_distance.add(distance);
                     duration = duration1.getString("text");
                     suggested_place_duration.add(duration);
-                    int duration_value = duration1.getInt("value");
 
                 }catch (JSONException e) {
                     Log.e(LOG_MESSAGE, e.getMessage());
