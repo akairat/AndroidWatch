@@ -43,6 +43,9 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     List<String> suggested_place_geo;
     List<String> suggested_place_distance;
     List<String> suggested_place_duration;
+    List<String> suggested_place_budget;
+    List<String> suggested_place_lat;
+    List<String> suggested_place_long;
 
     JSONArray place_details = null;
     JSONArray place_list= null;
@@ -52,9 +55,8 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
     private String PlaceType = "musuem|park";
     private String PlaceLocation= "42.3613154,-71.0912821";
     private double lat, lon;
-
     private String[] selectedPlace =
-            {"placename","placeaddress","placedistance","placeduration"}; //Temp option to be shown to the user
+            {"placename","placeaddress","placedistance","placeduration", "placelat", "placelong"}; //Temp option to be shown to the user
                                                                           //only selectedPlace[1] will be passed to the GoogleMaps activity
 
 
@@ -153,6 +155,9 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 String[] place_geo = resultData.getStringArray("place_geo");
                 String[] place_distance = resultData.getStringArray("place_distance");
                 String[] place_duration = resultData.getStringArray("place_duration");
+                String[] place_budget = resultData.getStringArray("place_budget");
+                String[] place_lat = resultData.getStringArray("place_lat");
+                String[] place_long = resultData.getStringArray("place_long");
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_address);
                 Log.i(LOG_MESSAGE, " PlacesInfo" + place_geo);
@@ -166,6 +171,16 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
                 updateChoice(null);
                 if (progress.isShowing()) { //if the loading buffer is showing, stop it
                     progress.cancel();
+                    TextView tv = (TextView) findViewById(R.id.textView4);
+                    TextView tv2 = (TextView) findViewById(R.id.textView5);
+                    TextView tv3 = (TextView) findViewById(R.id.textView);
+                    TextView tv4 = (TextView) findViewById(R.id.textView2);
+                    ImageView iv = (ImageView) findViewById(R.id.imageView3);
+                    tv.setVisibility(View.VISIBLE);
+                    tv2.setVisibility(View.VISIBLE);
+                    tv3.setVisibility(View.VISIBLE);
+                    tv4.setVisibility(View.VISIBLE);
+                    iv.setVisibility(View.VISIBLE);
                 }
                 break;
             case GetResultService.STATUS_ERROR:
@@ -188,6 +203,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         TextView tv2 = (TextView) findViewById(R.id.textView5);
         TextView tv3 = (TextView) findViewById(R.id.textView);
         TextView tv4 = (TextView) findViewById(R.id.textView2);
+        TextView tv5 = (TextView) findViewById(R.id.textView6);
         ImageView iv = (ImageView) findViewById(R.id.imageView3);
         if (suggested_place_name.get(i).equals("-")){
 
@@ -205,9 +221,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 
         }
         else
-        {
-
-            String temp = suggested_place_name.get(i);
+        {   String temp = suggested_place_name.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
             selectedPlace[0] = temp;
@@ -222,10 +236,28 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
             tv3.setText("Distance: "+temp);
             selectedPlace[2] = temp;
 
+
             temp = suggested_place_duration.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv4.setText("Duration: "+temp);
             selectedPlace[3] = temp;
+
+            temp = suggested_place_budget.get(i);
+            if (temp.equals("0"))
+                tv5.setText("Free!");
+            else if (temp.equals("1"))
+                tv5.setText("$");
+            else if (temp.equals("2"))
+                tv5.setText("$$");
+            else if (temp.equals("3"))
+                tv5.setText("$$$");
+            else if (temp.equals("4"))
+                tv5.setText("$$$$");
+
+            selectedPlace[4] = suggested_place_lat.get(i);
+            selectedPlace[5] = suggested_place_long.get(i);
+            //selectedPlace = suggested_place_geo.get(i);
+            //Log.i(LOG_MESSAGE, "Geo " + placelat + placelong);
         }
         i++;
     }
@@ -237,6 +269,5 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         sn.putExtra("aString", info);
         System.out.println("WHOOOO GO" + info);
         startActivity(sn);
-
     }
 }
