@@ -97,24 +97,29 @@ public class MainActivity extends ActionBarActivity implements
         pickActivity = "food";
         toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
         toast.show();
+        startNext();
+
     }
 
     public void setPark(View view) {
         pickActivity = "park|amusement_park";
         toast = Toast.makeText(getApplicationContext(), "Parks picked!", Toast.LENGTH_SHORT);
         toast.show();
+        startNext();
     }
 
     public void setMuseum(View view) {
         pickActivity = "museum";
         toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
         toast.show();
+        startNext();
     }
 
     public void setShopping(View view) {
         pickActivity = "store|shopping_mall|department_store";
         toast = Toast.makeText(getApplicationContext(), "Shopping picked!", Toast.LENGTH_SHORT);
         toast.show();
+        startNext();
     }
 
     //Uses a random number generator to pick an activity to do
@@ -135,12 +140,13 @@ public class MainActivity extends ActionBarActivity implements
                 pickActivity = "park|amusement_park";
                 break;
         }
+        toast = Toast.makeText(getApplicationContext(), "Let's go!", Toast.LENGTH_SHORT);
+        toast.show();
+        startNext();
     }
 
-    //Uses the user's selections to start the next activity
-    //With regards to the watch: time picker + voice activation will be used to pick items
-        //pressing "go" on the watch will pass in appropriate JSON info the JSONProcess class
-    public void startNext(View view) {
+    //Start Next competition
+    public void startNext() {
         getLocation();
         Intent i = new Intent(this, ResultActivity.class);
         myString = pickActivity+":"+latitude+":"+longitude;

@@ -6,16 +6,30 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.json.JSONObject;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.Button;
+import android.graphics.*;
+import android.provider.MediaStore.*;
+import android.net.Uri;
+import android.content.Intent;
+import android.content.ContentValues;
+import android.provider.MediaStore;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -29,7 +43,7 @@ public class Nav extends FragmentActivity {
     private double place_Long;
     private double user_Lat;
     private double user_Long;
-
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +67,8 @@ public class Nav extends FragmentActivity {
         String url = getMapsApiDirectionsUrl();
         ReadTask downloadTask = new ReadTask();
         downloadTask.execute(url);
+        Button b = (Button) findViewById(R.id.button);
+        b.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -130,6 +146,67 @@ public class Nav extends FragmentActivity {
         return url;
     }
 
+    //Takes screenshot and send to watch
+    public void sendWatch(View view) {
+        SnapshotReadyCallback callback = new SnapshotReadyCallback()
+        {
+            @Override
+            public void onSnapshotReady(Bitmap snapshot)
+            {
+                // TODO Auto-generated method stub
+                bitmap = snapshot;
+                OutputStream fout = null;
+                String filePath = System.currentTimeMillis() + ".jpeg";
+                try
+                {
+                    fout = openFileOutput(filePath,
+                            MODE_WORLD_READABLE);
+                    // Write the string to the file
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fout);
+                    fout.flush();
+                    fout.close();
+                }
+                catch (FileNotFoundException e)
+                {
+                    // TODO Auto-generated catch block
+                    Log.d("ImageCapture", "FileNotFoundException");
+                    Log.d("ImageCapture", e.getMessage());
+                    filePath = "";
+                }
+                catch (IOException e)
+                {
+                    // TODO Auto-generated catch block
+                    Log.d("ImageCapture", "IOException");
+                    Log.d("ImageCapture", e.getMessage());
+                    filePath = "";
+                }
+                openShareImageDialog(filePath);
+            }
+        };
+        mMap.snapshot(callback);
+    }
+
+    public void openShareImageDialog(String filePath)
+    {
+        File file = this.getFileStreamPath(filePath);
+        if(!filePath.equals(""))
+        {
+            final ContentValues values = new ContentValues(2);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+            final Uri contentUriFile = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(android.content.Intent.EXTRA_STREAM, contentUriFile);
+            startActivity(Intent.createChooser(intent, "Share Image"));
+        }
+        else
+        {
+           System.out.println("Failed :( ");
+        }
+    }
+
     private class ReadTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... url) {
@@ -196,8 +273,7 @@ public class Nav extends FragmentActivity {
 
             mMap.addPolyline(polyLineOptions);
         }
+
     }
-
-
 
 }
