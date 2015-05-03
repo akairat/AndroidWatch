@@ -10,11 +10,12 @@ import java.util.List;
 import org.json.JSONObject;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -28,6 +29,7 @@ public class Nav extends FragmentActivity {
     private double place_Long;
     private double user_Lat;
     private double user_Long;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,23 +93,28 @@ public class Nav extends FragmentActivity {
      * Set up a map with a marker for our location
      */
     private void setUpMap() {
+        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+
         LatLng latlng = new LatLng(user_Lat, user_Long);
         mMap.addMarker(new MarkerOptions().position(latlng).title("My Location"));
         LatLng mDestination = new LatLng(place_Lat, place_Long);
         mMap.addMarker(new MarkerOptions().position(mDestination).icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(place_Name));
-        System.out.println("BOOM Marker");
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        System.out.println("Map Type Set");
+        LatLng avg = new LatLng((user_Lat+place_Lat)/(2.0), (user_Long+place_Long)/(2.0));
 
-        System.out.println(latlng + "OKAY THEN");
-        System.out.println(mDestination + "OKAY THEN");
-        double avg_lat = (user_Lat+place_Lat)/(2.0);
-        double avg_long = (user_Long+place_Long)/(2.0);
-        LatLng avg = new LatLng(avg_lat, avg_long);
+        /*LatLngBounds bounds = new LatLngBounds.Builder()
+                .include(mDestination)
+                .include(latlng)
+                .build();
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, 70));*/
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(avg));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
-        System.out.println("Zoom");
+
         // Will add in functionality to search for final destination
         // mMap.addMarker(new MarkerOptions().position(new LatLng(place_Lat, place_Long)).title("Destination"));
     }
@@ -177,9 +184,7 @@ public class Nav extends FragmentActivity {
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
 
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
+                    LatLng position = new LatLng(Double.parseDouble(point.get("lat")), Double.parseDouble(point.get("lng")));
 
                     points.add(position);
                 }

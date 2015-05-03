@@ -1,6 +1,5 @@
 package com.example.kairat.androidwatch;
 
-import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
@@ -10,38 +9,33 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TimePicker;
 import android.widget.Toast;
 import android.location.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.Calendar;
 import java.util.Random;
 
 
 public class MainActivity extends ActionBarActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
-    private static int help_code = 3;
     private static int adventure_code= 5;
     private String myString;
     private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
+    Toast toast;
 
     private String pickActivity;
     private double latitude;
     private double longitude;
 
     private Location mLastLocation;
-    private Location mCurrentLocation;
     private GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -50,7 +44,6 @@ public class MainActivity extends ActionBarActivity implements
         setContentView(R.layout.activity_main);
         if (checkPlayServices()) {
             buildGoogleApiClient();
-            getLocation();
         }
     }
 
@@ -80,8 +73,6 @@ public class MainActivity extends ActionBarActivity implements
         return true;
     }
 
-    //Currently Location is being fudged - When null, will always give 32-144 geocode
-    //TODO: Create location service
     public void getLocation() {
         // Get the location manager
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -92,19 +83,6 @@ public class MainActivity extends ActionBarActivity implements
         else {
             System.out.println("Location was not obtained.");
         }
-        /* Commented out hardcoded Geocode of 32-144
-        try {
-          createLocationRequest();
-        } catch (Exception e) {
-            latitude = 42.361648260887;
-            longitude = -71.0905194348;
-        }*/
-        System.out.println(latitude + "," + longitude);
-        Context context = getApplicationContext();
-        CharSequence text = "Location Set to: "+ latitude + "," + longitude;
-        int duration = Toast.LENGTH_SHORT;
-        //Toast toast = Toast.makeText(context, text, duration);
-        //toast.show();
     }
 
     @Override
@@ -114,10 +92,29 @@ public class MainActivity extends ActionBarActivity implements
         return true;
     }
 
-    //Starts an that gives general directions on application use
-    public void helpMenu(View view) {
-        Intent hm = new Intent(this, helpMenu.class);
-        startActivityForResult(hm, help_code);
+
+    public void setFood(View view) {
+        pickActivity = "food";
+        toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void setPark(View view) {
+        pickActivity = "park|amusement_park";
+        toast = Toast.makeText(getApplicationContext(), "Parks picked!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void setMuseum(View view) {
+        pickActivity = "museum";
+        toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void setShopping(View view) {
+        pickActivity = "store|shopping_mall|department_store";
+        toast = Toast.makeText(getApplicationContext(), "Shopping picked!", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     //Uses a random number generator to pick an activity to do
@@ -138,26 +135,15 @@ public class MainActivity extends ActionBarActivity implements
                 pickActivity = "park|amusement_park";
                 break;
         }
-        System.out.println(pickActivity);
-        Context context = getApplicationContext();
-        CharSequence text = pickActivity +" picked!";
-        //int duration = Toast.LENGTH_SHORT;
-        //Toast toast = Toast.makeText(context, text, duration);
-        //toast.show();
-        //System DEBUG: Prints randomly selected activity
     }
 
     //Uses the user's selections to start the next activity
     //With regards to the watch: time picker + voice activation will be used to pick items
         //pressing "go" on the watch will pass in appropriate JSON info the JSONProcess class
     public void startNext(View view) {
-        if (checkPlayServices()) {
-            buildGoogleApiClient();
-            getLocation();
-        }
+        getLocation();
         Intent i = new Intent(this, ResultActivity.class);
         myString = pickActivity+":"+latitude+":"+longitude;
-        System.out.println(myString);
         i.putExtra("qString", myString);
         startActivityForResult(i, adventure_code);
     }
@@ -189,9 +175,9 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        latitude = mCurrentLocation.getLatitude();
-        longitude = mCurrentLocation.getLongitude();
+        mLastLocation = location;
+        latitude = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
     }
 
     /**

@@ -46,7 +46,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
         setContentView(R.layout.activity_result);
 
         progress = new ProgressDialog(ResultActivity.this); //start the loading buffer
-        this.progress.setMessage("loading...");
+        this.progress.setMessage("Searching for suggestions nearby!");
         this.progress.show();
 
        Bundle extras = getIntent().getExtras(); //send bundle to get result  service
@@ -181,7 +181,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 
             String temp1 = PlaceType.replaceAll("\\|"," or ");
             String showResult = temp1.replaceAll("_"," ");
-            String temp = "Sorry, there is no "+ showResult + " nearby";
+            String temp = "Sorry, there is no "+ showResult + " nearby! Trying going back and picking a different activity!";
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
             tv2.setVisibility(View.INVISIBLE);
@@ -211,7 +211,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 
             temp = suggested_place_duration.get(i);
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
-            tv4.setText("Walking Time: "+temp + " min");
+            tv4.setText("Walking Time: "+ temp);
             selectedPlace[3] = temp;
 
             selectedPlace[4] = suggested_place_geo.get(i);
@@ -233,7 +233,6 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
             Intent sn = new Intent(this, Nav.class);
             String info = selectedPlace[4] + ":" + lat + ":" + lon + ":" + selectedPlace[0];
             sn.putExtra("aString", info);
-            System.out.println("WHOOOO GO" + info);
             startActivity(sn);
         }
     }
