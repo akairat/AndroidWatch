@@ -81,6 +81,17 @@
             android:gravity="center_horizontal"
             android:layout_weight="0.13"
             android:visibility="invisible"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-Budget-"
+            android:id="@+id/textView6"
+            android:layout_below="@+id/textView2"
+            android:textSize="18dp"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.13"
+            android:visibility="invisible"/>
     </LinearLayout>
 
     <LinearLayout

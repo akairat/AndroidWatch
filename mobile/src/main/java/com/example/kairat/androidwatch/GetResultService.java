@@ -41,10 +41,12 @@ public class GetResultService extends IntentService {
     List<String> suggested_place_name = new ArrayList<String>();
     List<String> suggested_place_address = new ArrayList<String>();
     List<String> suggested_place_geo = new ArrayList<String>();
-    List<String> suggested_place_photo = new ArrayList<String>();
+    List<String> suggested_place_lat = new ArrayList<String>();
+    List<String> suggested_place_long = new ArrayList<String>();
     private String suggested_place_string = null;
     List<String> suggested_place_distance = new ArrayList<String>();
     List<String> suggested_place_duration = new ArrayList<String>();
+    List<String> suggested_place_budget = new ArrayList<String>();
 
     int i =0;
 
@@ -67,6 +69,7 @@ public class GetResultService extends IntentService {
     private String PlaceLocation;//= "42.3613154,-71.0912821";
     private String PlaceSetting="&radius=500&opennow&types=";
     private String PlaceType;//="museum";
+    private String PlacePhone;
 
     /*testing to insert photo from photo API, not use*/
     private String PlacePhoto ="https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU";
@@ -152,6 +155,9 @@ public class GetResultService extends IntentService {
             String[] place_geo = new String[suggested_place_geo.size()];
             String[] place_distance = new String[suggested_place_distance.size()];
             String[] place_duration = new String[suggested_place_duration.size()];
+            String[] place_budget = new String[suggested_place_budget.size()];
+            String[] place_lat = new String[suggested_place_lat.size()];
+            String[] place_long = new String[suggested_place_long.size()];
 
                 /* Sending result back to activity */
             if (null != place_name && place_name.length > 0) {
@@ -166,12 +172,14 @@ public class GetResultService extends IntentService {
                 place_geo = suggested_place_geo.toArray(place_geo);
                 place_distance = suggested_place_distance.toArray(place_distance);
                 place_duration = suggested_place_duration.toArray(place_duration);
+                place_budget = suggested_place_budget.toArray(place_duration);
 
                 bundle.putStringArray("place_name", place_name);
                 bundle.putStringArray("place_address", place_address);
                 bundle.putStringArray("place_geo", place_geo);
                 bundle.putStringArray("place_distance", place_distance);
                 bundle.putStringArray("place_duration", place_duration);
+                bundle.putStringArray("place_budget", place_budget);
 
                 receiver.send(STATUS_FINISHED, bundle);
             }
@@ -182,17 +190,28 @@ public class GetResultService extends IntentService {
                 String[] place_geo = new String[1];
                 String[] place_distance = new String[1];
                 String[] place_duration = new String[1];
+                String[] place_budget = new String[1];
+                String[] place_lat = new String[1];
+               String[] place_long = new String[1];
                 place_name[0] = "-";
                 place_address[0] = "-";
                 place_geo[0] = "-";
+                place_lat[0] = "-";
+                place_long[0] = "-";
                 place_distance[0] = "-";
                 place_duration[0] = "-";
+                place_budget[0] = "-";
+
 
                 bundle.putStringArray("place_name", place_name);
                 bundle.putStringArray("place_address", place_address);
                 bundle.putStringArray("place_geo", place_geo);
+                bundle.putStringArray("place_lat", place_lat);
+                bundle.putStringArray("place_long", place_long);
                 bundle.putStringArray("place_distance", place_distance);
                 bundle.putStringArray("place_duration", place_duration);
+                bundle.putStringArray("place_budget", place_budget);
+
 
                 receiver.send(STATUS_FINISHED, bundle);
          }
@@ -336,12 +355,17 @@ public class GetResultService extends IntentService {
                 Log.i(LOG_MESSAGE, "name:" + name);
                 String vicinity = results.getString("vicinity");
                 Log.i(LOG_MESSAGE, "vicinity:" + vicinity);
+                String budget = results.getString("price_level");
+                Log.i(LOG_MESSAGE, "budget:" + budget);
 
                 //    TextView tv = (TextView) findViewById(R.id.textView4);
                 //    tv.setText(name);
                 suggested_place_name.add(name);
                 suggested_place_address.add(vicinity);
+                suggested_place_lat.add(lat1);
+                suggested_place_long.add(long1);
                 suggested_place_geo.add(lat1 + "," + long1);
+                suggested_place_budget.add(budget);
 
                 //  for(int j=0; j<4; j++)
 
