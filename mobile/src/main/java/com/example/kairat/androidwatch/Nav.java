@@ -2,19 +2,30 @@ package com.example.kairat.androidwatch;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONObject;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Bundle;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
 public class Nav extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private String address;
-    private double placelat;
-    private double placelong;
+    private String place_Name;
+    private double place_Lat;
+    private double place_Long;
     private double user_Lat;
     private double user_Long;
 
@@ -29,14 +40,17 @@ public class Nav extends FragmentActivity {
         }
         String aString = extras.getString("aString");
         String[] result_array = aString.split(":");
-        address = result_array[0];
-        //placelat = Double.parseDouble(result_array[1]);
-        //placelong = Double.parseDouble(result_array[2]);
+        String[] address = result_array[0].split(",");
+
+        place_Lat = Double.parseDouble(address[0]);
+        place_Long = Double.parseDouble(address[1]);
         user_Lat = Double.parseDouble(result_array[1]);
         user_Long = Double.parseDouble(result_array[2]);
-        System.out.println("YEAYEAH"+user_Lat +","+ user_Long);
-        //System.out.println("OKAYTEHH"+placelat +","+ placelong);
+        place_Name = result_array[3];
         setUpMapIfNeeded();
+        String url = getMapsApiDirectionsUrl();
+        ReadTask downloadTask = new ReadTask();
+        downloadTask.execute(url);
     }
 
     @Override
@@ -78,18 +92,107 @@ public class Nav extends FragmentActivity {
      */
     private void setUpMap() {
         LatLng latlng = new LatLng(user_Lat, user_Long);
-        mMap.addMarker(new MarkerOptions().position(latlng).title("Your Location"));
-        //LatLng mDestination = new LatLng(placelat, placelong);
-        //mMap.addMarker(new MarkerOptions().position(mDestination).title("Your Destination"));
+        mMap.addMarker(new MarkerOptions().position(latlng).title("My Location"));
+        LatLng mDestination = new LatLng(place_Lat, place_Long);
+        mMap.addMarker(new MarkerOptions().position(mDestination).icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(place_Name));
         System.out.println("BOOM Marker");
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         System.out.println("Map Type Set");
 
         System.out.println(latlng + "OKAY THEN");
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        System.out.println(mDestination + "OKAY THEN");
+        double avg_lat = (user_Lat+place_Lat)/(2.0);
+        double avg_long = (user_Long+place_Long)/(2.0);
+        LatLng avg = new LatLng(avg_lat, avg_long);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(avg));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         System.out.println("Zoom");
         // Will add in functionality to search for final destination
         // mMap.addMarker(new MarkerOptions().position(new LatLng(place_Lat, place_Long)).title("Destination"));
     }
+
+    private String getMapsApiDirectionsUrl() {
+        String origin = "origin=" + user_Lat + "," + user_Long;
+        String destination = "destination=" + place_Lat + "," + place_Long;
+        String sensor = "sensor=false";
+        String params = origin + "&" + destination + "&" + sensor;
+        String output = "json";
+        String url = "https://maps.googleapis.com/maps/api/directions/"
+                + output + "?" + params;
+        return url;
+    }
+
+    private class ReadTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... url) {
+            String data = "";
+            try {
+                HttpConnection http = new HttpConnection();
+                data = http.readUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            new ParserTask().execute(result);
+        }
+    }
+
+    private class ParserTask extends
+            AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(
+                String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                PathJSONParser parser = new PathJSONParser();
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
+            ArrayList<LatLng> points = null;
+            PolylineOptions polyLineOptions = null;
+
+            // traversing through routes
+            for (int i = 0; i < routes.size(); i++) {
+                points = new ArrayList<LatLng>();
+                polyLineOptions = new PolylineOptions();
+                List<HashMap<String, String>> path = routes.get(i);
+
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                polyLineOptions.addAll(points);
+                polyLineOptions.width(30);
+                polyLineOptions.color(Color.YELLOW);
+            }
+
+            mMap.addPolyline(polyLineOptions);
+        }
+    }
+
+
+
 }
