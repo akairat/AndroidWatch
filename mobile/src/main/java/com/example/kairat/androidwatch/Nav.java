@@ -146,7 +146,7 @@ public class Nav extends FragmentActivity {
         return url;
     }
 
-    //Takes screenshot and send to watch
+    //Takes screenshot and send to watch?
     public void sendWatch(View view) {
         SnapshotReadyCallback callback = new SnapshotReadyCallback()
         {
@@ -186,6 +186,7 @@ public class Nav extends FragmentActivity {
         mMap.snapshot(callback);
     }
 
+    //TODO: CHANGE THIS TO SEND IMG MESSAGE TO WATCH
     public void openShareImageDialog(String filePath)
     {
         File file = this.getFileStreamPath(filePath);

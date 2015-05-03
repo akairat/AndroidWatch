@@ -44,14 +44,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ListenerService extends WearableListenerService implements DownloadResultReceiver.Receiver {
 
-    private boolean mIsInResolution;
-    protected static final int REQUEST_CODE_RESOLUTION = 1;
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
-    private String pickActivity;
-    private double latitude;
-    private double longitude;
-
     private static final String TAG = "MOBILE MESSAGE: ";
     String PlaceType;
 
@@ -63,9 +55,6 @@ public class ListenerService extends WearableListenerService implements Download
     List<String> suggested_place_geo;
     List<String> suggested_place_distance;
     List<String> suggested_place_duration;
-
-    JSONArray place_details = null;
-    JSONArray place_list= null;
 
     private String PlaceLocation;
 
@@ -101,11 +90,6 @@ public class ListenerService extends WearableListenerService implements Download
                 String[] place_geo = resultData.getStringArray("place_geo");
                 String[] place_distance = resultData.getStringArray("place_distance");
                 String[] place_duration = resultData.getStringArray("place_duration");
-                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_name);
-                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_address);
-                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_geo);
-                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_distance);
-                //Log.i(LOG_MESSAGE, " PlacesInfo" + place_duration);
                 suggested_place_name = Arrays.asList(place_name);
                 suggested_place_address= Arrays.asList(place_address);
                 suggested_place_geo = Arrays.asList(place_geo);

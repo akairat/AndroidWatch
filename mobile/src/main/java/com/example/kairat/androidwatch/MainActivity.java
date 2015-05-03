@@ -98,7 +98,6 @@ public class MainActivity extends ActionBarActivity implements
         toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
         toast.show();
         startNext();
-
     }
 
     public void setPark(View view) {
@@ -113,6 +112,7 @@ public class MainActivity extends ActionBarActivity implements
         toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
         toast.show();
         startNext();
+
     }
 
     public void setShopping(View view) {

@@ -4,118 +4,110 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
+import java.util.Random;
 
+//DOES NOT WORK
 public class GPSService extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "GPSService";
-
-    private static final String KEY_IN_RESOLUTION = "is_in_resolution";
-
-    /**
-     * Request code for auto Google Play Services error resolution.
-     */
+    private static int adventure_code= 5;
+    private String myString;
+    private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+    Toast toast;
 
-    /**
-     * Google API client.
-     */
+    private String pickActivity;
+    private double latitude;
+    private double longitude;
+
+    private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
 
-    /**
-     * Determines if the client is in a resolution state, and
-     * waiting for resolution intent to return.
-     */
-    private boolean mIsInResolution;
-
-    /**
-     * Called when the activity is starting. Restores the activity state.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
+        setContentView(R.layout.activity_main);
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
         }
     }
 
-    /**
-     * Called when the Activity is made visible.
-     * A connection to Play Services need to be initiated as
-     * soon as the activity is visible. Registers {@code ConnectionCallbacks}
-     * and {@code OnConnectionFailedListener} on the
-     * activities itself.
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    // Optionally, add additional APIs and scopes if required.
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
         }
-        mGoogleApiClient.connect();
+        return true;
     }
 
-    /**
-     * Called when activity gets invisible. Connection to Play Services needs to
-     * be disconnected as soon as an activity is invisible.
-     */
-    @Override
-    protected void onStop() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
+    public void getLocation() {
+        // Get the location manager
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
         }
-        super.onStop();
-    }
-
-    /**
-     * Saves the resolution state.
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_IN_RESOLUTION, mIsInResolution);
-    }
-
-    /**
-     * Handles Google Play Services resolution callbacks.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_RESOLUTION:
-                retryConnecting();
-                break;
+        else {
+            System.out.println("Location was not obtained.");
         }
     }
 
-    private void retryConnecting() {
-        mIsInResolution = false;
-        if (!mGoogleApiClient.isConnecting()) {
-            mGoogleApiClient.connect();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        //Using GooglePlay Services Location API
+        mLastLocation= LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
         }
     }
 
-    /**
-     * Called when {@code mGoogleApiClient} is connected.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "GoogleApiClient connected");
-        // TODO: Start making API requests.
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        latitude = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
     }
 
     /**
@@ -123,7 +115,7 @@ public class GPSService extends Activity implements
      */
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.i(TAG, "GoogleApiClient connection suspended");
+        System.out.println("GoogleApiClient connection suspended");
         retryConnecting();
     }
 
@@ -134,11 +126,11 @@ public class GPSService extends Activity implements
      */
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
+        System.out.println("GoogleApiClient connection failed: " + result.toString());
         if (!result.hasResolution()) {
             // Show a localized error dialog.
             GooglePlayServicesUtil.getErrorDialog(
-                    result.getErrorCode(), this, 0, new OnCancelListener() {
+                    result.getErrorCode(), this, 0, new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             retryConnecting();
@@ -155,9 +147,30 @@ public class GPSService extends Activity implements
         mIsInResolution = true;
         try {
             result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
-        } catch (SendIntentException e) {
-            Log.e(TAG, "Exception while starting resolution activity", e);
+        } catch (IntentSender.SendIntentException e) {
+            System.out.println("Exception while starting resolution activity");
+            e.printStackTrace();
             retryConnecting();
+        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+    private void retryConnecting() {
+        mIsInResolution = false;
+        if (!mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
         }
     }
 }
