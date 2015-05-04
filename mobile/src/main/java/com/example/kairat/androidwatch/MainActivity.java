@@ -35,6 +35,10 @@ public class MainActivity extends ActionBarActivity implements
     private double latitude;
     private double longitude;
 
+
+
+
+
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
 
