@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity implements
     private boolean mIsInResolution;
     protected static final int REQUEST_CODE_RESOLUTION = 1;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-    Toast toast;
+    //Toast toast;
 
     private String pickActivity;
     private double latitude;
@@ -95,30 +95,30 @@ public class MainActivity extends ActionBarActivity implements
 
     public void setFood(View view) {
         pickActivity = "food";
-        toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
-        toast.show();
+        //toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
+        //toast.show();
         startNext();
     }
 
     public void setPark(View view) {
         pickActivity = "park|amusement_park";
-        toast = Toast.makeText(getApplicationContext(), "Parks picked!", Toast.LENGTH_SHORT);
-        toast.show();
+        //toast = Toast.makeText(getApplicationContext(), "Parks picked!", Toast.LENGTH_SHORT);
+        //toast.show();
         startNext();
     }
 
     public void setMuseum(View view) {
         pickActivity = "museum";
-        toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
-        toast.show();
+        //toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
+        //toast.show();
         startNext();
 
     }
 
     public void setShopping(View view) {
         pickActivity = "store|shopping_mall|department_store";
-        toast = Toast.makeText(getApplicationContext(), "Shopping picked!", Toast.LENGTH_SHORT);
-        toast.show();
+        //toast = Toast.makeText(getApplicationContext(), "Shopping picked!", Toast.LENGTH_SHORT);
+        //toast.show();
         startNext();
     }
 
@@ -140,8 +140,8 @@ public class MainActivity extends ActionBarActivity implements
                 pickActivity = "park|amusement_park";
                 break;
         }
-        toast = Toast.makeText(getApplicationContext(), "Let's go!", Toast.LENGTH_SHORT);
-        toast.show();
+        //toast = Toast.makeText(getApplicationContext(), "Let's go!", Toast.LENGTH_SHORT);
+        //toast.show();
         startNext();
     }
 

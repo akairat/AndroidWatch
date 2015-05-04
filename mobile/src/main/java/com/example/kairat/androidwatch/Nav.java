@@ -1,5 +1,7 @@
 package com.example.kairat.androidwatch;
 
+import android.content.DialogInterface;
+import android.content.IntentSender;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.*;
 
 import org.json.JSONObject;
 import android.graphics.Color;
@@ -24,7 +27,13 @@ import android.net.Uri;
 import android.content.Intent;
 import android.content.ContentValues;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,10 +43,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.wearable.Asset;
+import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.PutDataRequest;
 
-public class Nav extends FragmentActivity {
+public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private GoogleApiClient mGoogleApiClient;
+    private boolean mIsInResolution;
     private String place_Name;
     private double place_Lat;
     private double place_Long;
@@ -45,11 +59,16 @@ public class Nav extends FragmentActivity {
     private double user_Long;
     private Bitmap bitmap;
 
+    protected static final int REQUEST_CODE_RESOLUTION = 1;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
-
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
+        }
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
@@ -70,6 +89,33 @@ public class Nav extends FragmentActivity {
         Button b = (Button) findViewById(R.id.button);
         b.setVisibility(View.VISIBLE);
     }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Wearable.API)
+                .build();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onResume() {
@@ -146,7 +192,7 @@ public class Nav extends FragmentActivity {
         return url;
     }
 
-    //Takes screenshot and send to watch?
+    //Takes screenshot and saves as a bitmap, also calls the image share dialog (ON THE MOBILE)
     public void sendWatch(View view) {
         SnapshotReadyCallback callback = new SnapshotReadyCallback()
         {
@@ -155,6 +201,7 @@ public class Nav extends FragmentActivity {
             {
                 // TODO Auto-generated method stub
                 bitmap = snapshot;
+                //--Android stuff
                 OutputStream fout = null;
                 String filePath = System.currentTimeMillis() + ".jpeg";
                 try
@@ -186,7 +233,7 @@ public class Nav extends FragmentActivity {
         mMap.snapshot(callback);
     }
 
-    //TODO: CHANGE THIS TO SEND IMG MESSAGE TO WATCH
+    //This code sends the image via a message or something
     public void openShareImageDialog(String filePath)
     {
         File file = this.getFileStreamPath(filePath);
@@ -207,6 +254,67 @@ public class Nav extends FragmentActivity {
            System.out.println("Failed :( ");
         }
     }
+
+
+
+    //TODO: WHEN CONNECTED, CREATES ASSET TO SEND TO THE WEARABLE
+    @Override
+    public void onConnected(Bundle bundle) {
+        Asset asset = createAssetFromBitmap(bitmap);
+        PutDataRequest request = PutDataRequest.create("/image");
+        request.putAsset("miniMap", asset);
+        Wearable.DataApi.putDataItem(mGoogleApiClient, request);
+    }
+
+    //Creates an image asset
+    private static Asset createAssetFromBitmap(Bitmap bitmap) {
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+        return Asset.createFromBytes(byteStream.toByteArray());
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        retryConnecting();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        System.out.println("GoogleApiClient connection failed: " + result.toString());
+        if (!result.hasResolution()) {
+            // Show a localized error dialog.
+            GooglePlayServicesUtil.getErrorDialog(
+                    result.getErrorCode(), this, 0, new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            retryConnecting();
+                        }
+                    }).show();
+            return;
+        }
+        // If there is an existing resolution error being displayed or a resolution
+        // activity has started before, do nothing and wait for resolution
+        // progress to be completed.
+        if (mIsInResolution) {
+            return;
+        }
+        mIsInResolution = true;
+        try {
+            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+        } catch (IntentSender.SendIntentException e) {
+            System.out.println("Exception while starting resolution activity");
+            e.printStackTrace();
+            retryConnecting();
+        }
+    }
+
+    private void retryConnecting() {
+        mIsInResolution = false;
+        if (!mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
 
     private class ReadTask extends AsyncTask<String, Void, String> {
         @Override
