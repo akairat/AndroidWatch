@@ -9,9 +9,8 @@
 
     <permission
         android:name="com.example.kairat.androidwatch.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="com.example.kairat.androidwatch.permission.MAPS_RECEIVE" />
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="com.example.kairat.androidwatch.permission.MAPS_RECEIVE"/>
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Add internet permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Add location permissions -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -69,15 +68,12 @@
             android:name=".Nav"
             android:label="@string/title_activity_nav" >
         </activity>
+
+
         <activity
             android:name=".GPSService"
             android:label="@string/title_activity_gpsservice" >
         </activity>
-
-        <service
-            android:name=".GPSLocationService"
-            android:exported="false" >
-        </service>
     </application>
 
 </manifest>

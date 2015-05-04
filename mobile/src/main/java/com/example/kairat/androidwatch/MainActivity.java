@@ -4,14 +4,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
 import android.content.IntentSender;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.location.*;
 
@@ -21,11 +18,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.Arrays;
 import java.util.Random;
 
 
-public class MainActivity extends ActionBarActivity implements DownloadResultReceiver.Receiver{
+public class MainActivity extends ActionBarActivity implements
+    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
     private static int adventure_code= 5;
     private String myString;
@@ -45,42 +42,48 @@ public class MainActivity extends ActionBarActivity implements DownloadResultRec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        call_intent();
-    }
-
-
-    private DownloadResultReceiver mReceiver;
-    public void call_intent(){
-        /* Starting Download Service */
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, GetResultService.class);
-/* Send optional extras to Download IntentService */
-        intent.putExtra("receiver", mReceiver);
-        intent.putExtra("requestId", 101);
-        startService(intent);
-    }
-
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        switch (resultCode) {
-            case GetResultService.STATUS_RUNNING:
-                setProgressBarIndeterminateVisibility(true);
-                break;
-            case GetResultService.STATUS_FINISHED:
-                setProgressBarIndeterminateVisibility(false);
-                latitude = Double.parseDouble(resultData.getString("myLat"));
-                longitude = Double.parseDouble(resultData.getString("myLong"));
-                break;
-            case GetResultService.STATUS_ERROR:
-                /* Handle the error */
-                String error = resultData.getString(Intent.EXTRA_TEXT);
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
-                break;
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
         }
     }
 
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public void getLocation() {
+        // Get the location manager
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
+        else {
+            System.out.println("Location was not obtained.");
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -144,6 +147,7 @@ public class MainActivity extends ActionBarActivity implements DownloadResultRec
 
     //Start Next competition
     public void startNext() {
+        getLocation();
         Intent i = new Intent(this, ResultActivity.class);
         myString = pickActivity+":"+latitude+":"+longitude;
         i.putExtra("qString", myString);
@@ -163,6 +167,87 @@ public class MainActivity extends ActionBarActivity implements DownloadResultRec
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        //Using GooglePlay Services Location API
+        mLastLocation= LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        latitude = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} connection is suspended.
+     */
+    @Override
+    public void onConnectionSuspended(int cause) {
+        System.out.println("GoogleApiClient connection suspended");
+        retryConnecting();
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} is trying to connect but failed.
+     * Handle {@code result.getResolution()} if there is a resolution
+     * available.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        System.out.println("GoogleApiClient connection failed: " + result.toString());
+        if (!result.hasResolution()) {
+            // Show a localized error dialog.
+            GooglePlayServicesUtil.getErrorDialog(
+                    result.getErrorCode(), this, 0, new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            retryConnecting();
+                        }
+                    }).show();
+            return;
+        }
+        // If there is an existing resolution error being displayed or a resolution
+        // activity has started before, do nothing and wait for resolution
+        // progress to be completed.
+        if (mIsInResolution) {
+            return;
+        }
+        mIsInResolution = true;
+        try {
+            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+        } catch (IntentSender.SendIntentException e) {
+            System.out.println("Exception while starting resolution activity");
+            e.printStackTrace();
+            retryConnecting();
+        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+    private void retryConnecting() {
+        mIsInResolution = false;
+        if (!mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+        }
     }
 }
 

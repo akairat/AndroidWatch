@@ -47,8 +47,6 @@ public class GPSService extends Activity implements
         if (checkPlayServices()) {
             buildGoogleApiClient();
         }
-
-
     }
 
     protected synchronized void buildGoogleApiClient() {

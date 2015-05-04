@@ -227,7 +227,6 @@ public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionC
                     Log.d("ImageCapture", e.getMessage());
                     filePath = "";
                 }
-                //Comment out below to get rid of
                 openShareImageDialog(filePath);
             }
         };
@@ -384,10 +383,6 @@ public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionC
             mMap.addPolyline(polyLineOptions);
         }
 
-    }
-
-    public void closeScreen (View view){
-        finish();
     }
 
 }
