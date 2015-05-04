@@ -10,11 +10,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             android:textSize="18dp"
-            android:background="#FFFFFF"
             android:gravity="center|center_vertical"
             android:layout_above="@+id/linearLayout3"
             android:layout_centerHorizontal="true"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:fontFamily="sans-serif"/>
 
 
 <!--Place Name-->
@@ -31,7 +31,7 @@
         android:layout_marginTop="35dp"
         android:gravity="center|center_vertical"
         android:visibility="visible"
-        android:typeface="sans" />
+        android:fontFamily="sans-serif-condensed" />
 
 <!--Address Name-->
         <TextView
@@ -44,6 +44,7 @@
             android:gravity="center|center_vertical"
             android:layout_centerHorizontal="true"
             android:visibility="visible"
+            android:fontFamily="sans-serif-thin"
             android:textSize="22dp" />
 
     <LinearLayout
@@ -75,6 +76,7 @@
             android:textSize="20dp"
             android:gravity="center_horizontal"
             android:layout_weight="0.13"
+            android:fontFamily="sans-serif"
             android:visibility="visible"   />
 
 
@@ -123,14 +125,6 @@
 
 
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/textView5"
-        />
 
 
 </RelativeLayout>
