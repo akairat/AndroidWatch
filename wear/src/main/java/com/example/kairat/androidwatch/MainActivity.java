@@ -148,7 +148,7 @@ public class MainActivity extends Activity{
             if (MESSAGE.equals("#")){
                 MESSAGE = "museum";
             } else {
-                MESSAGE = MESSAGE + "|museum";
+                MESSAGE = MESSAGE + "|museum|art_gallery|zoo|aquarium";
             }
         }
 
@@ -175,9 +175,9 @@ public class MainActivity extends Activity{
         if(splitText.contains("store") || splitText.contains("shopping")
                 || splitText.contains("mall")){
             if (MESSAGE.equals("#")){
-                MESSAGE = "store|shopping_mall|department_store";
+                MESSAGE = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
             } else {
-                MESSAGE += "|store|shopping_mall|department_store";
+                MESSAGE += "|shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
             }
         }
     }

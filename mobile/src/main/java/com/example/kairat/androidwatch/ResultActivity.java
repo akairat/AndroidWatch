@@ -197,7 +197,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
             String temp = "Sorry, there is no "+ showResult + " nearby!";
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
-            tv2.setText("Trying going back and picking a different activity!");
+            tv2.setText("Try going back and picking a different activity!");
             //tv2.setVisibility(View.INVISIBLE);
             tv3.setVisibility(View.INVISIBLE);
             tv4.setVisibility(View.INVISIBLE);

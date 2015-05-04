@@ -9,7 +9,7 @@
     <string name="title_activity_jsonprocess">JSONProcess</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="title_activity_location_services">LocationServices</string>
-    <string name="letsExplore">LetsExplore</string>
+    <string name="letsExplore">SomeWear</string>
 
     <string name="title_activity_nav">letsExplore Navigation</string>
     <string name="title_activity_gpsservice">GPSService</string>

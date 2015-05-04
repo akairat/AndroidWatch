@@ -35,10 +35,6 @@ public class MainActivity extends ActionBarActivity implements
     private double latitude;
     private double longitude;
 
-
-
-
-
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
 
@@ -98,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements
 
 
     public void setFood(View view) {
-        pickActivity = "food";
+        pickActivity = "food|bakery|cafe|grocery_or_supermarket";
         //toast = Toast.makeText(getApplicationContext(), "Food picked!", Toast.LENGTH_SHORT);
         //toast.show();
         startNext();
@@ -112,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void setMuseum(View view) {
-        pickActivity = "museum";
+        pickActivity = "museum|art_gallery|zoo|aquarium";
         //toast = Toast.makeText(getApplicationContext(), "Museums picked!", Toast.LENGTH_SHORT);
         //toast.show();
         startNext();
@@ -120,7 +116,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void setShopping(View view) {
-        pickActivity = "store|shopping_mall|department_store";
+        pickActivity = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
         //toast = Toast.makeText(getApplicationContext(), "Shopping picked!", Toast.LENGTH_SHORT);
         //toast.show();
         startNext();
@@ -132,13 +128,13 @@ public class MainActivity extends ActionBarActivity implements
         int ri = rg.nextInt(4);
         switch (ri) {
             case 0:
-                pickActivity = "food";
+                pickActivity = "food|bakery|cafe|grocery_or_supermarket";
                 break;
             case 1:
-                pickActivity = "store|shopping_mall|department_store";
+                pickActivity = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
                 break;
             case 2:
-                pickActivity = "museum";
+                pickActivity = "museum|art_gallery|zoo|aquarium";
                 break;
             case 3:
                 pickActivity = "park|amusement_park";

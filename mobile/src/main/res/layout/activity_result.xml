@@ -9,11 +9,11 @@
         <TextView android:text="" android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
-            android:textSize="18dp"
+            android:textSize="22dp"
             android:gravity="center|center_vertical"
             android:layout_above="@+id/linearLayout3"
             android:layout_centerHorizontal="true"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:fontFamily="sans-serif"/>
 
 
@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
         android:gravity="center|center_vertical"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:fontFamily="sans-serif-condensed" />
 
 <!--Address Name-->
@@ -43,8 +43,8 @@
             android:layout_below="@+id/textView4"
             android:gravity="center|center_vertical"
             android:layout_centerHorizontal="true"
-            android:visibility="visible"
-            android:fontFamily="sans-serif-thin"
+            android:visibility="invisible"
+            android:fontFamily="sans-serif"
             android:textSize="22dp" />
 
     <LinearLayout
@@ -56,6 +56,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="30dp"
         android:gravity="center|center_vertical"
+        android:fontFamily="sans-serif"
         android:text="">
 
         <ImageView
@@ -65,7 +66,7 @@
             android:layout_alignTop="@+id/textView"
             android:layout_alignParentStart="true"
             android:src="@drawable/walkingman"
-            android:visibility="visible"/>
+            android:visibility="invisible"/>
 
 <!--Duration-->
         <TextView
@@ -77,7 +78,7 @@
             android:gravity="center_horizontal"
             android:layout_weight="0.13"
             android:fontFamily="sans-serif"
-            android:visibility="visible"   />
+            android:visibility="invisible"   />
 
 
     </LinearLayout>
@@ -90,6 +91,7 @@
         android:id="@+id/linearLayout2"
         android:layout_marginBottom="46dp"
         android:layout_alignParentBottom="true"
+        android:fontFamily="sans-serif"
         android:layout_alignParentStart="true">
 
         <ImageButton
@@ -100,7 +102,7 @@
             android:src="@drawable/yes"
             android:onClick = "startNavigation"
             android:layout_alignLeft="@+id/result"
-            android:visibility="visible"/>
+            android:visibility="invisible"/>
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -111,7 +113,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/imageView"
             android:layout_toEndOf="@+id/imageButton"
-            android:visibility="visible"/>
+            android:visibility="invisible"/>
 
         <ImageButton
                 android:layout_width="wrap_content"
@@ -121,7 +123,7 @@
                 android:src="@drawable/no"
                 android:layout_below="@+id/imageView"
                 android:layout_toEndOf="@+id/imageButton"
-                android:visibility="visible"/>
+                android:visibility="invisible"/>
 
 
     </LinearLayout>

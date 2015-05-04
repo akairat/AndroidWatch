@@ -161,7 +161,8 @@ public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionC
         int height = displayMetrics.heightPixels;
 
         LatLng latlng = new LatLng(user_Lat, user_Long);
-        mMap.addMarker(new MarkerOptions().position(latlng).title("My Location"));
+        mMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title("My Location"));
         LatLng mDestination = new LatLng(place_Lat, place_Long);
         mMap.addMarker(new MarkerOptions().position(mDestination).icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(place_Name));
