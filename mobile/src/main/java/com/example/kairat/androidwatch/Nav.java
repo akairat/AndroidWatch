@@ -77,6 +77,7 @@ public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionC
         String[] result_array = aString.split(":");
         String[] address = result_array[0].split(",");
 
+        Log.e("K", aString);
         place_Lat = Double.parseDouble(address[0]);
         place_Long = Double.parseDouble(address[1]);
         user_Lat = Double.parseDouble(result_array[1]);

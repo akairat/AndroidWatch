@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -47,6 +48,7 @@ public class SuggestionActivity extends Activity {
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static String MESSAGE = "";
     private static String TAG = "SUGGESTION";
+    private String userLocation;
 
 
     @Override
@@ -80,6 +82,7 @@ public class SuggestionActivity extends Activity {
             suggested_place_duration.add(place_parts.get(2));
             suggested_place_address.add(place_parts.get(3));
             suggested_place_geo.add(place_parts.get(4));
+            userLocation = place_parts.get(5);
         }
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
@@ -128,8 +131,15 @@ public class SuggestionActivity extends Activity {
     private void choiceMade(View v){
         if(place_index < max_index){
             // Send the correct choice to the mobile to open the map
-            MESSAGE = suggested_place_name.get(place_index)+ "," +suggested_place_geo.get(place_index);
+            MESSAGE = "+" + ":" +suggested_place_geo.get(place_index)+":"+userLocation+":"+suggested_place_name.get(place_index);
             sendChoice();
+            Context context = getApplicationContext();
+            CharSequence text = "Please, check your phone for directions.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            finish();
         }
     }
 

@@ -57,6 +57,7 @@ public class ListenerService extends WearableListenerService implements Download
     List<String> suggested_place_duration;
 
     private String PlaceLocation;
+    private String specialPlace = "42.3613154:-71.0912821";
 
     private DownloadResultReceiver mReceiver;
     public void call_intent(){
@@ -101,7 +102,8 @@ public class ListenerService extends WearableListenerService implements Download
                             + suggested_place_distance.get(i) + "#"
                             + suggested_place_duration.get(i) + "#"
                             + suggested_place_address.get(i) + "#"
-                            + suggested_place_geo.get(i) + "*";
+                            + suggested_place_geo.get(i) + "#"
+                            + specialPlace + "*";
                 }
 
                 Log.i(LOG_MESSAGE, MESSAGE);
@@ -121,11 +123,18 @@ public class ListenerService extends WearableListenerService implements Download
         Log.d(TAG, "Message Received");
         MESSAGE = "";
         PlaceType = messageEvent.getPath();
-        PlaceLocation = "42.3613154,-71.0912821";
-
-        call_intent();
-
-        initApi();
+        if (PlaceType.charAt(0) == '+'){
+            int end = PlaceType.length();
+            String coord = PlaceType.substring(2, end);
+            Intent i = new Intent(this, Nav.class);
+            i.putExtra("aString", coord);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        } else {
+            PlaceLocation = "42.3613154,-71.0912821";
+            call_intent();
+            initApi();
+        }
     }
 
 

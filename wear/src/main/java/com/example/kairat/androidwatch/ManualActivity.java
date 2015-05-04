@@ -157,7 +157,7 @@ TimePicker Dialog
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
-                int duration = Toast.LENGTH_SHORT;
+                int duration = Toast.LENGTH_LONG;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
@@ -172,7 +172,7 @@ TimePicker Dialog
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
-                int duration = Toast.LENGTH_SHORT;
+                int duration = Toast.LENGTH_LONG;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
@@ -187,7 +187,7 @@ TimePicker Dialog
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
-                int duration = Toast.LENGTH_SHORT;
+                int duration = Toast.LENGTH_LONG;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
