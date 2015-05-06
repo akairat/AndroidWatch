@@ -39,7 +39,7 @@ public class SuggestionActivity extends Activity {
 
     private boolean refreshOn = false;
 
-    private int place_index = 1;
+    private int place_index = 0;
 
     private int max_index;
 
@@ -144,6 +144,7 @@ public class SuggestionActivity extends Activity {
     }
 
     private void nextChoice(View v){
+        place_index++;
         if (place_index < max_index){
             String name = suggested_place_name.get(place_index);
             if(name.length() < 20){
@@ -154,7 +155,7 @@ public class SuggestionActivity extends Activity {
 
             distanceAndTimeToPlace.setText(suggested_place_distance.get(place_index) + ", " + suggested_place_duration.get(place_index));
             addressOfPlace.setText(suggested_place_address.get(place_index));
-            place_index++;
+            //place_index++;
         } else if (place_index >= max_index && !refreshOn){
             nameOfPlace.setText("No Suggestions Left");
             distanceAndTimeToPlace.setText("Click refresh or go back and pick something else.");
@@ -175,7 +176,7 @@ public class SuggestionActivity extends Activity {
             distanceAndTimeToPlace.setText(suggested_place_distance.get(place_index) + ", " + suggested_place_duration.get(place_index));
             addressOfPlace.setText(suggested_place_address.get(place_index));
             refreshOn = false;
-            place_index++;
+            //place_index++;
         }
     }
 
