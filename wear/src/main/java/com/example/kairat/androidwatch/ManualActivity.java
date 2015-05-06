@@ -168,7 +168,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "museum";
+                MESSAGE = "museum|art_gallery|zoo|aquarium";
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
@@ -183,7 +183,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "store|shopping_mall|department_store";
+                MESSAGE = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
@@ -198,7 +198,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "food";
+                MESSAGE = "food|bakery|cafe|grocery_or_supermarket";
                 //openSuggestion();
                 sendChoice();
                 Context context = getApplicationContext();

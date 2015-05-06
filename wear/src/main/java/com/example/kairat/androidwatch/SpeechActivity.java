@@ -132,9 +132,9 @@ public class SpeechActivity extends Activity {
         List<String> splitText = Arrays.asList(spokenText.toLowerCase().split("\\s+"));
         if (splitText.contains("museum") || splitText.contains("museums")){
             if (MESSAGE.equals("#")){
-                MESSAGE = "museum";
+                MESSAGE = "museum|art_gallery|zoo|aquarium";
             } else {
-                MESSAGE = MESSAGE + "|museum";
+                MESSAGE = MESSAGE + "|museum|art_gallery|zoo|aquarium";
             }
         }
 
@@ -142,9 +142,9 @@ public class SpeechActivity extends Activity {
                 || splitText.contains("cafe") || splitText.contains("restaurants")
                 || splitText.contains("cafeteria")){
             if (MESSAGE.equals("#")){
-                MESSAGE = "food";
+                MESSAGE = "food|bakery|cafe|grocery_or_supermarket";
             } else {
-                MESSAGE = MESSAGE + "|food";
+                MESSAGE = MESSAGE + "|food|bakery|cafe|grocery_or_supermarket";
             }
         }
 
@@ -161,9 +161,9 @@ public class SpeechActivity extends Activity {
         if(splitText.contains("store") || splitText.contains("shopping")
                 || splitText.contains("mall")){
             if (MESSAGE.equals("#")){
-                MESSAGE = "store|shopping_mall|department_store";
+                MESSAGE = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
             } else {
-                MESSAGE += "|store|shopping_mall|department_store";
+                MESSAGE += "|shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
             }
         }
     }
