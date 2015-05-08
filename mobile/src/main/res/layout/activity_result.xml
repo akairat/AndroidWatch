@@ -6,32 +6,32 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.kairat.androidwatch.ResultActivity">
 
-        <TextView android:text="" android:layout_width="wrap_content"
+        <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             android:textSize="22dp"
             android:gravity="center|center_vertical"
             android:layout_above="@+id/linearLayout3"
             android:layout_centerHorizontal="true"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:fontFamily="sans-serif"/>
 
 
 <!--Place Name-->
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/textView4"
-            android:textSize="28dp"
-            android:textColor="#ff5045ff"
-            android:textStyle="bold"
-        android:layout_marginBottom="37dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
+        android:textSize="30dp"
+        android:textColor="#ff5045ff"
+        android:textStyle="bold"
+        android:layout_marginBottom="54dp"
         android:gravity="center|center_vertical"
         android:visibility="invisible"
-        android:fontFamily="sans-serif-condensed" />
+        android:fontFamily="sans-serif"
+        android:layout_above="@+id/textView"
+        android:layout_centerHorizontal="true" />
 
 <!--Address Name-->
         <TextView
@@ -39,25 +39,24 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textView5"
-            android:layout_marginBottom="32dp"
-            android:layout_below="@+id/textView4"
             android:gravity="center|center_vertical"
-            android:layout_centerHorizontal="true"
             android:visibility="invisible"
             android:fontFamily="sans-serif"
-            android:textSize="22dp" />
+            android:textSize="22dp"
+            android:layout_above="@+id/textView"
+            android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:weightSum="1"
         android:id="@+id/linearLayout3"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="30dp"
         android:gravity="center|center_vertical"
         android:fontFamily="sans-serif"
-        android:text="">
+        android:text=""
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true">
 
         <ImageView
             android:layout_width="14dp"
@@ -99,20 +98,23 @@
             android:layout_height="100dp"
             android:id="@+id/imageButton"
             android:layout_below="@+id/imageView"
-            android:src="@drawable/yes"
+            android:src="@drawable/green_circle_check"
             android:onClick = "startNavigation"
             android:layout_alignLeft="@+id/result"
-            android:visibility="invisible"/>
+            android:background="@null"
+            android:visibility="invisible"
+            android:paddingRight="5dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:id="@+id/imageButton3"
             android:onClick = "closeScreen"
-            android:src="@drawable/back"
+            android:src="@drawable/back2"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/imageView"
             android:layout_toEndOf="@+id/imageButton"
+            android:background="@null"
             android:visibility="invisible"/>
 
         <ImageButton
@@ -120,10 +122,12 @@
                 android:layout_height="100dp"
                 android:id="@+id/imageButton2"
                 android:onClick = "updateChoice"
-                android:src="@drawable/no"
+                android:src="@drawable/noET"
                 android:layout_below="@+id/imageView"
                 android:layout_toEndOf="@+id/imageButton"
-                android:visibility="invisible"/>
+                android:background="@null"
+                android:visibility="invisible"
+            android:paddingLeft="5dp" />
 
 
     </LinearLayout>
