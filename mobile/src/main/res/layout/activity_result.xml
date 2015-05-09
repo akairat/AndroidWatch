@@ -122,7 +122,7 @@
                 android:layout_height="100dp"
                 android:id="@+id/imageButton2"
                 android:onClick = "updateChoice"
-                android:src="@drawable/noET"
+                android:src="@drawable/noet"
                 android:layout_below="@+id/imageView"
                 android:layout_toEndOf="@+id/imageButton"
                 android:background="@null"
