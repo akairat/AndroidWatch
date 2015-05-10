@@ -41,10 +41,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".helpMenu"
-            android:label="@string/title_activity_help_menu" >
-        </activity>
-        <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result" >
         </activity>
