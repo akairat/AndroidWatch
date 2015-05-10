@@ -57,8 +57,11 @@ public class ListenerService extends WearableListenerService implements Download
     List<String> suggested_place_duration;
 
     private String PlaceLocation;
-    private String specialPlace = "42.3613154:-71.0912821";
+    //Stata
+    //private String specialPlace = "42.3613154:-71.0912821";
 
+    // Student center
+    private String specialPlace = "42.359099, -71.094536";
     private DownloadResultReceiver mReceiver;
     public void call_intent(){
         /* Starting Download Service */

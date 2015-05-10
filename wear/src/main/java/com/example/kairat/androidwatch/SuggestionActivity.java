@@ -20,7 +20,9 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class SuggestionActivity extends Activity {
@@ -73,6 +75,9 @@ public class SuggestionActivity extends Activity {
         Log.d("PLACES RECEIVED", places);
         List<String> list_places = Arrays.asList(places.split("\\*"));
         max_index = list_places.size();
+
+        // Shuffle list to give randomized suggestions to user
+        Collections.shuffle(list_places);
 
         for (String place : list_places){
             List<String> place_parts = Arrays.asList(place.split("#"));
