@@ -50,10 +50,10 @@ public class MainActivity extends Activity{
     }
 
     public void launchSpeechActivity(View v){
-        //Intent i = new Intent(this, SpeechActivity.class);
-        //startActivity(i);
+        Intent i = new Intent(this, GetLocationActivity.class);
+        startActivity(i);
 
-        displaySpeechRecognizer();
+        //displaySpeechRecognizer();
     }
 
     public void launchManualActivity(View v){
