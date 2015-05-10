@@ -192,9 +192,7 @@ public class ResultActivity extends ActionBarActivity implements DownloadResultR
 
         if (suggested_place_name.get(i).equals("-")){
 
-            String temp1 = PlaceType.replaceAll("\\|"," or ");
-            String showResult = temp1.replaceAll("_"," ");
-            String temp = "Sorry, there is no "+ showResult + " nearby!";
+            String temp = "Sorry, there are no open places nearby!";
             Log.i(LOG_MESSAGE, " PlacesInfo" + temp);
             tv.setText(temp);
             tv2.setText("Try going back and picking a different activity!");

@@ -47,28 +47,21 @@ import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.PutDataRequest;
 
-public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class Nav extends FragmentActivity{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private GoogleApiClient mGoogleApiClient;
-    private boolean mIsInResolution;
     private String place_Name;
     private double place_Lat;
     private double place_Long;
     private double user_Lat;
     private double user_Long;
-    private Bitmap bitmap;
 
-    protected static final int REQUEST_CODE_RESOLUTION = 1;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
-        if (checkPlayServices()) {
-            buildGoogleApiClient();
-        }
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
@@ -90,33 +83,6 @@ public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionC
         Button b = (Button) findViewById(R.id.button);
         b.setVisibility(View.VISIBLE);
     }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Wearable.API)
-                .build();
-    }
-
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Toast.makeText(getApplicationContext(),
-                        "This device is not supported.", Toast.LENGTH_LONG)
-                        .show();
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
 
     @Override
     protected void onResume() {
@@ -179,142 +145,28 @@ public class Nav extends FragmentActivity implements GoogleApiClient.ConnectionC
         mMap.moveCamera(CameraUpdateFactory.newLatLng(avg));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
-        // Will add in functionality to search for final destination
-        // mMap.addMarker(new MarkerOptions().position(new LatLng(place_Lat, place_Long)).title("Destination"));
     }
 
     private String getMapsApiDirectionsUrl() {
         String origin = "origin=" + user_Lat + "," + user_Long;
         String destination = "destination=" + place_Lat + "," + place_Long;
+        String mode = "mode=walking";
         String sensor = "sensor=false";
-        String params = origin + "&" + destination + "&" + sensor;
+        String params = origin + "&" + destination + "&" + mode + "&" + sensor;
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/"
                 + output + "?" + params;
+        System.out.println(url);
         return url;
     }
 
-    //Takes screenshot and saves as a bitmap, also calls the image share dialog (ON THE MOBILE)
+
     public void sendWatch(View view) {
-        SnapshotReadyCallback callback = new SnapshotReadyCallback()
-        {
-            @Override
-            public void onSnapshotReady(Bitmap snapshot)
-            {
-                // TODO Auto-generated method stub
-                bitmap = snapshot;
-                //--Android stuff
-                OutputStream fout = null;
-                String filePath = System.currentTimeMillis() + ".jpeg";
-                try
-                {
-                    fout = openFileOutput(filePath,
-                            MODE_WORLD_READABLE);
-                    // Write the string to the file
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fout);
-                    fout.flush();
-                    fout.close();
-                }
-                catch (FileNotFoundException e)
-                {
-                    // TODO Auto-generated catch block
-                    Log.d("ImageCapture", "FileNotFoundException");
-                    Log.d("ImageCapture", e.getMessage());
-                    filePath = "";
-                }
-                catch (IOException e)
-                {
-                    // TODO Auto-generated catch block
-                    Log.d("ImageCapture", "IOException");
-                    Log.d("ImageCapture", e.getMessage());
-                    filePath = "";
-                }
-                openShareImageDialog(filePath);
-            }
-        };
-        mMap.snapshot(callback);
-    }
-
-    //This code sends the image via a message or something
-    public void openShareImageDialog(String filePath)
-    {
-        File file = this.getFileStreamPath(filePath);
-        if(!filePath.equals(""))
-        {
-            final ContentValues values = new ContentValues(2);
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
-            final Uri contentUriFile = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-            intent.setType("image/jpeg");
-            intent.putExtra(android.content.Intent.EXTRA_STREAM, contentUriFile);
-            startActivity(Intent.createChooser(intent, "Share Image"));
-        }
-        else
-        {
-           System.out.println("Failed :( ");
-        }
-    }
-
-
-
-    //TODO: WHEN CONNECTED, CREATES ASSET TO SEND TO THE WEARABLE
-    @Override
-    public void onConnected(Bundle bundle) {
-        Asset asset = createAssetFromBitmap(bitmap);
-        PutDataRequest request = PutDataRequest.create("/image");
-        request.putAsset("miniMap", asset);
-        Wearable.DataApi.putDataItem(mGoogleApiClient, request);
-    }
-
-    //Creates an image asset
-    private static Asset createAssetFromBitmap(Bitmap bitmap) {
-        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
-        return Asset.createFromBytes(byteStream.toByteArray());
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        retryConnecting();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        System.out.println("GoogleApiClient connection failed: " + result.toString());
-        if (!result.hasResolution()) {
-            // Show a localized error dialog.
-            GooglePlayServicesUtil.getErrorDialog(
-                    result.getErrorCode(), this, 0, new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            retryConnecting();
-                        }
-                    }).show();
-            return;
-        }
-        // If there is an existing resolution error being displayed or a resolution
-        // activity has started before, do nothing and wait for resolution
-        // progress to be completed.
-        if (mIsInResolution) {
-            return;
-        }
-        mIsInResolution = true;
-        try {
-            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
-        } catch (IntentSender.SendIntentException e) {
-            System.out.println("Exception while starting resolution activity");
-            e.printStackTrace();
-            retryConnecting();
-        }
-    }
-
-    private void retryConnecting() {
-        mIsInResolution = false;
-        if (!mGoogleApiClient.isConnecting()) {
-            mGoogleApiClient.connect();
-        }
+        Uri mIntentUri = Uri.parse("google.navigation:q="+place_Lat+","+place_Long+"&mode=w");
+        System.out.println(mIntentUri);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, mIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 
 

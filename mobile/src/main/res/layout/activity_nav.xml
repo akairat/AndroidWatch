@@ -14,7 +14,7 @@ tools:context="com.example.kairat.androidwatch.Nav">
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Share Map!"
+        android:text="Send Directions to Watch!"
         android:onClick="sendWatch"
         android:textAllCaps="true"
         android:fontFamily="sans-serif"
