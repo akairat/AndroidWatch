@@ -26,12 +26,14 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends Activity{
 
     private static final int SPEECH_REQUEST_CODE = 0;
-    private static final String TAG = "Wearable messages: ";
+    private static final String TAG = "Wearable messages:";
     private GoogleApiClient client;
     public static String MESSAGE = "#";
     int CONNECTION_TIME_OUT_MS = 100;
     private String nodeId;
     private Toast toast;
+
+    private String userCoordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,10 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
 
         initApi();
+
+        Intent intent = getIntent();
+
+        userCoordinates = intent.getStringExtra("userLocation");
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -50,14 +56,12 @@ public class MainActivity extends Activity{
     }
 
     public void launchSpeechActivity(View v){
-        Intent i = new Intent(this, GetLocationActivity.class);
-        startActivity(i);
-
-        //displaySpeechRecognizer();
+        displaySpeechRecognizer();
     }
 
     public void launchManualActivity(View v){
         Intent i = new Intent(this, ManualActivity.class);
+        i.putExtra("userCoordinates", userCoordinates);
         startActivity(i);
     }
 
@@ -121,9 +125,7 @@ public class MainActivity extends Activity{
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            parseSpeech(spokenText);
-            //String[] inputStrings = spokenText.split("\\s+");
-            //mTextView.setText(spokenText);
+
             parseSpeech(spokenText.toLowerCase());
             Log.d(TAG, MESSAGE);
             sendMessage();
@@ -146,7 +148,7 @@ public class MainActivity extends Activity{
         List<String> splitText = Arrays.asList(spokenText.toLowerCase().split("\\s+"));
         if (splitText.contains("museum") || splitText.contains("museums")){
             if (MESSAGE.equals("#")){
-                MESSAGE = "museum";
+                MESSAGE = "museum|art_gallery|zoo|aquarium";
             } else {
                 MESSAGE = MESSAGE + "|museum|art_gallery|zoo|aquarium";
             }
@@ -156,9 +158,9 @@ public class MainActivity extends Activity{
                 || splitText.contains("cafe") || splitText.contains("restaurants")
                 || splitText.contains("cafeteria")){
             if (MESSAGE.equals("#")){
-                MESSAGE = "food";
+                MESSAGE = "food|bakery|cafe|grocery_or_supermarket";
             } else {
-                MESSAGE = MESSAGE + "|food";
+                MESSAGE = MESSAGE + "|food|bakery|cafe|grocery_or_supermarket";
             }
         }
 
@@ -180,6 +182,8 @@ public class MainActivity extends Activity{
                 MESSAGE += "|shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
             }
         }
+
+        MESSAGE+= "="+userCoordinates;
     }
 
     /**

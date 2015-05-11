@@ -8,15 +8,20 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.wearable.Wearable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +31,9 @@ public class GetLocationActivity extends Activity implements
         LocationListener {
 
     private static final String TAG = "WearableActivity";
+
     private static final String KEY_IN_RESOLUTION = "is_in_resolution";
+
     /**
      * Request code for auto Google Play Services error resolution.
      */
@@ -44,11 +51,12 @@ public class GetLocationActivity extends Activity implements
     private boolean mIsInResolution;
 
     private TextView mTextView;
-    private Location mLastLocation;
 
+    private String latitudeLongitude;
     /**
      * Called when the activity is starting. Restores the activity state.
      */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +65,7 @@ public class GetLocationActivity extends Activity implements
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                //mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
     }
@@ -75,6 +83,7 @@ public class GetLocationActivity extends Activity implements
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
+                    .addApi(Wearable.API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
@@ -88,12 +97,13 @@ public class GetLocationActivity extends Activity implements
      */
     @Override
     protected void onStop() {
+
+        Log.d(TAG, "Activity Stopped");
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
         super.onStop();
     }
-
 
     /**
      * Saves the resolution state.
@@ -144,10 +154,27 @@ public class GetLocationActivity extends Activity implements
         // Set the minimum displacement
         locationRequest.setSmallestDisplacement(2);
         // Register for location updates
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        if (status.getStatus().isSuccess()) {
+                            Log.d(TAG, "Status Success.");
+                            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                                Log.d(TAG, "Successfully requested location updates");
+                            }
+                        } else {
+                            Log.e(TAG,
+                                    "Failed in requesting location updates, "
+                                            + "status code: "
+                                            + status.getStatusCode()
+                                            + ", message: "
+                                            + status.getStatusMessage());
+                        }
+                    }
+                });
 
-        //mTextView.setText("Latitude:  " + String.valueOf(location.getLatitude()) +
-        //        "\nLongitude:  " + String.valueOf(location.getLongitude()));
+
     }
 
     /**
@@ -194,14 +221,32 @@ public class GetLocationActivity extends Activity implements
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location){
 
         // Log the output for debugging
-        Log.v("myTag", "Latitude: " + location.getLatitude() +
+        Log.v(TAG, "Latitude: " + location.getLatitude() +
                 ", Longitude: " + location.getLongitude());
 
-        // Display latitude in UI in default wearable text view
-        mTextView.setText("Latitude:  " + String.valueOf(location.getLatitude()) +
-                "\nLongitude:  " + String.valueOf(location.getLongitude()));
+        latitudeLongitude = String.valueOf(location.getLatitude())+","+String.valueOf(location.getLongitude());
+
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("userLocation", latitudeLongitude);
+        startActivity(i);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v(TAG, "Resuming");
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addApi(Wearable.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        mGoogleApiClient.connect();
     }
 }

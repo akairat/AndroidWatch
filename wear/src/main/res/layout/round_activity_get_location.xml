@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.kairat.androidwatch.GetLocationActivity"
-    tools:deviceIds="wear_round">
+    tools:deviceIds="wear_round"
+    android:background="#ffffff">
 
-    <TextView android:id="@+id/text"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_round" />
+        android:textColor="#000000"
+        android:text="Please wait..."
+        android:layout_centerInParent="true"
+        android:textSize="20dp"/>
 </RelativeLayout>

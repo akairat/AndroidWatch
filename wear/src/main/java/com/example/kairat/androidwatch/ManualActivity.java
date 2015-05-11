@@ -32,6 +32,8 @@ public class ManualActivity extends Activity /*implements ChoicesFragment.Choice
     private GoogleApiClient client;
     private String nodeId;
 
+    private String userCoordinates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,9 @@ public class ManualActivity extends Activity /*implements ChoicesFragment.Choice
 
         initApi();
 
+        Intent intent = getIntent();
+
+        userCoordinates = intent.getStringExtra("userCoordinates");
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -48,8 +53,6 @@ public class ManualActivity extends Activity /*implements ChoicesFragment.Choice
             }
         });
 
-        //showTimePickerDialog();
-        //showChoiceFragment();
     }
 
     /**
@@ -93,59 +96,6 @@ public class ManualActivity extends Activity /*implements ChoicesFragment.Choice
 
 
     /**
-     * Sends a message to the connected mobile device, telling it to show a Toast.
-     */
-    /*
-    @Override
-    public void sendChoice(String choice) {
-        MESSAGE = choice;
-        Log.d(TAG, "SENDING CHOICE");
-        if (nodeId != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    client.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
-                    Wearable.MessageApi.sendMessage(client, nodeId, MESSAGE, null).setResultCallback(
-                            new ResultCallback<MessageApi.SendMessageResult>() {
-                                @Override
-                                public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                                    if (!sendMessageResult.getStatus().isSuccess()){
-                                        Log.e(TAG, "Failed to send message with status code: "
-                                                + sendMessageResult.getStatus().getStatusCode());
-                                    } else {
-                                        Log.i(TAG, "message was sent: "+sendMessageResult.getStatus().getStatusCode());
-                                    }
-                                }
-                            }
-                    );
-                }
-            });
-        }
-    }
-
-
-    public void showChoiceFragment() {
-        ChoicesFragment cf = new ChoicesFragment();
-    }
-    */
-
-
-/*
-TimePicker Dialog
-    @Override
-    public void setStartTime(int hourOfDay, int minute) {
-        startHour = hourOfDay;
-        startMinute = minute;
-    }
-
-    public void showTimePickerDialog() {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getFragmentManager(), "timePicker");
-    }
-
-    */
-
-    /**
      * Assign onClick listeners to the buttons on the screen
      */
     public void showChoiceButtons(){
@@ -153,7 +103,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "park|amusement_park";
+                MESSAGE = "park|amusement_park" + "="+userCoordinates;
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
@@ -168,7 +118,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "museum|art_gallery|zoo|aquarium";
+                MESSAGE = "museum|art_gallery|zoo|aquarium" + "="+userCoordinates;
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
@@ -183,7 +133,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store";
+                MESSAGE = "shopping_mall|department_store|shoe_store|clothing_store|book_store|furniture_store"  + "="+userCoordinates;
                 sendChoice();
                 Context context = getApplicationContext();
                 CharSequence text = "Please wait...";
@@ -198,7 +148,7 @@ TimePicker Dialog
             @Override
             public void onClick(View view) {
                 //putImage();
-                MESSAGE = "food|bakery|cafe|grocery_or_supermarket";
+                MESSAGE = "food|bakery|cafe|grocery_or_supermarket" + "="+userCoordinates;
                 //openSuggestion();
                 sendChoice();
                 Context context = getApplicationContext();
@@ -217,6 +167,7 @@ TimePicker Dialog
      */
     public void sendChoice() {
         Log.d(TAG, nodeId);
+        Log.d(TAG, "Message --> " + MESSAGE);
         if (nodeId != null) {
             new Thread(new Runnable() {
                 @Override
@@ -241,19 +192,5 @@ TimePicker Dialog
                 }
             }).start();
         }
-    }
-
-
-    /**
-     * Method for putting images to the new activity (Hardcoded for presentation)
-     */
-    public void putImage(){
-        Intent i = new Intent(this, ImageActivity.class);
-        startActivity(i);
-    }
-
-    private void openSuggestion(){
-        Intent i = new Intent(this, SuggestionActivity.class);
-        startActivity(i);
     }
 }

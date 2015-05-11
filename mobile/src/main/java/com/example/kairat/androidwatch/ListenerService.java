@@ -61,7 +61,10 @@ public class ListenerService extends WearableListenerService implements Download
     //private String specialPlace = "42.3613154:-71.0912821";
 
     // Student center
-    private String specialPlace = "42.359099, -71.094536";
+    //private String specialPlace = "42.359099, -71.094536";
+
+    private String userLocation;
+
     private DownloadResultReceiver mReceiver;
     public void call_intent(){
         /* Starting Download Service */
@@ -106,7 +109,7 @@ public class ListenerService extends WearableListenerService implements Download
                             + suggested_place_duration.get(i) + "#"
                             + suggested_place_address.get(i) + "#"
                             + suggested_place_geo.get(i) + "#"
-                            + specialPlace + "*";
+                            + userLocation + "*";
                 }
 
                 Log.i(LOG_MESSAGE, MESSAGE);
@@ -125,16 +128,24 @@ public class ListenerService extends WearableListenerService implements Download
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Message Received");
         MESSAGE = "";
-        PlaceType = messageEvent.getPath();
-        if (PlaceType.charAt(0) == '+'){
-            int end = PlaceType.length();
-            String coord = PlaceType.substring(2, end);
+
+        String receivedMessage = messageEvent.getPath();
+        if (receivedMessage.charAt(0) == '+'){
+            int end = receivedMessage.length();
+            String coord = receivedMessage.substring(2, end);
             Intent i = new Intent(this, Nav.class);
             i.putExtra("aString", coord);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         } else {
-            PlaceLocation = "42.3613154,-71.0912821";
+
+            Log.d(TAG, receivedMessage);
+            String[] messageParts = receivedMessage.split("=");
+            PlaceType = messageParts[0];
+
+            PlaceLocation = messageParts[1];
+
+            userLocation = PlaceLocation.split(",")[0]+":"+PlaceLocation.split(",")[1];
             call_intent();
             initApi();
         }
