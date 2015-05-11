@@ -1,11 +1,13 @@
 package com.example.kairat.androidwatch;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
@@ -68,6 +70,28 @@ public class GetLocationActivity extends Activity implements
                 //mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle("")
+                .setMessage("Please make sure your phone is connected to the internet " +
+                        "and the location services are on.");
+
+        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        });
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                final AlertDialog alert = dialog.create();
+                alert.show();
+            }
+        }, 5000);
+
+
     }
 
     /**
