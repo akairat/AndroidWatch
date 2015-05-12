@@ -86,8 +86,10 @@ public class GetLocationActivity extends Activity implements
 
         handler.postDelayed(new Runnable() {
             public void run() {
-                final AlertDialog alert = dialog.create();
-                alert.show();
+                //final AlertDialog alert = dialog.create();
+                //alert.show();
+
+                finish();
             }
         }, 5000);
 
