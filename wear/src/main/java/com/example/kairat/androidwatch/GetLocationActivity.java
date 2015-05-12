@@ -71,25 +71,27 @@ public class GetLocationActivity extends Activity implements
             }
         });
 
-//        final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle("")
-//                .setMessage("Please make sure your phone is connected to the internet " +
-//                        "and the location services are on.");
-//
-//        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int whichButton) {
-//                finish();
-//            }
-//        });
-//
-//        Handler handler = new Handler();
-//
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                final AlertDialog alert = dialog.create();
-//                alert.show();
-//            }
-//        }, 5000);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle("")
+                .setMessage("Please make sure your phone is connected to the internet " +
+                        "and the location services are on.");
+
+        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        });
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                //final AlertDialog alert = dialog.create();
+                //alert.show();
+
+                finish();
+            }
+        }, 5000);
 
 
     }
