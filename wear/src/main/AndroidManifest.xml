@@ -22,7 +22,7 @@
         <activity
             android:name=".GetLocationActivity"
             android:noHistory="true"
-            android:label="@string/title_activity_get_location" >
+            android:label="@string/app_name" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,17 +54,6 @@
             </intent-filter>
         </service>
 
-        <!--
-        <activity
-            android:name=".GetLocationActivity"
-            android:label="@string/title_activity_get_location" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
